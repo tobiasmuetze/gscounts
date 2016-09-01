@@ -1,0 +1,25 @@
+Package: gsnbin
+Type: Package
+Title: Group Sequential Designs with Negative Binomial Data
+Version: 0.0.1-9000
+Authors@R: person("Tobias", "Muetze", role=c("aut","cre"),
+                    email="tobias.muetze@outlook.com")
+Author: Tobias Muetze [aut, cre]
+Description: Design and monitoring of group sequential designs with negative
+    binomial data.
+Depends:
+    R (>= 3.0.0)
+Imports:
+    stats,
+    MASS
+Suggests:
+    testthat,
+    knitr,
+    rmarkdown
+License: GPL (>= 2)
+NeedsCompilation: yes
+URL: https://github.com/tobiasmuetze/gsnbin
+BugReports: https://github.com/tobiasmuetze/gsnbin/issues
+VignetteBuilder: knitr
+LazyData: true
+RoxygenNote: 5.0.1
