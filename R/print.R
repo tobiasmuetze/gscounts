@@ -31,6 +31,7 @@ print.GSNBdesign <- function(x, ...) {
   cat("Number of looks: ", length(x$timing), "\n")
   if (!is.null(x$accrual_period)) cat("Accrual period: ", x$accrual_period, "\n")
   if (!is.null(x$study_period)) cat("Study duration: ", x$study_period, "\n")
+  if (!is.null(x$followup_max)) cat("Follow-up times: ", x$followup_max, "\n")
   cat("Information times of looks: ", paste(format(x$timing, digits = 4), collapse = ", "), "\n")
   cat("Maximum information: ", paste(format(x$max_info, digits = 4), collapse = ", "), "\n")
   cat("Sample size group 1: ", x$n1, "\n")

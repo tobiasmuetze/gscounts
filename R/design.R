@@ -131,37 +131,6 @@ design_gsnb <- function(rate1, rate2, shape, power_gs, timing, esf = esf_obrien,
   critical <- power_out$critical
   power_fix <- power_out$power_fix
 
-  # # Determine maximum information for given fix follow-up time
-  # body_followmax <- quote({
-  #   n1 <- ceiling(n / (1 + 1/random_ratio))
-  #   n2 <- ceiling(n / (1 + random_ratio))
-  #   n <- n1 + n2
-  #   get_info_gsnb(rate1 = rate1, rate2 = rate2, shape = shape,
-  #                 followup1 = rep(followup_max, times = n1),
-  #                 followup2 = rep(followup_max, times = n2))
-  # })
-  # # Determine maximum information for given recruitment times with variable study period
-  # body_recruit <- quote({
-  #   isRec1 <- (t_recruit1 <= study_period)
-  #   isRec2 <- (t_recruit2 <= study_period)
-  #   get_info_gsnb(rate1 = rate1, rate2 = rate2, shape = shape,
-  #                 followup1 = study_period - t_recruit1[isRec1],
-  #                 followup2 = study_period - t_recruit2[isRec2])
-  # })
-  # # Determine maximum information for given accural and study period
-  # # with variable sample size from accural
-  # body_accural <- quote({
-  #   n1 <- ceiling(n / (1 + 1/random_ratio))
-  #   n2 <- ceiling(n / (1 + random_ratio))
-  #   n <- n1 + n2
-  #   t_recruit1 <- seq(0, accrual_period, length.out = n1)
-  #   t_recruit2 <- seq(0, accrual_period, length.out = n2)
-  #   get_info_gsnb(rate1 = rate1, rate2 = rate2, shape = shape,
-  #                 followup1 = study_period - t_recruit1,
-  #                 followup2 = study_period - t_recruit2)
-  # })
-
-
   isNull_fm <- is.null(followup_max)
   isNull_sp <- is.null(study_period)
   isNull_ap <- is.null(accrual_period)
@@ -171,30 +140,16 @@ design_gsnb <- function(rate1, rate2, shape, power_gs, timing, esf = esf_obrien,
   # Calcualte the missing design value
   if (all(!isNull_fm, isNull_sp, isNull_ap)) {
     # Calculate the sample size for a fixed individual follow-up
-    # n <- uniroot(f = function(n){eval(body_followmax) - max_info},
-    #              interval = c(2*random_ratio, 1000), extendInt = "upX")$root
-    # max_info <- eval(body_followmax)
     out <- samplesize_from_followup(max_info = max_info, random_ratio = random_ratio, 
                                     rate1 = rate1, rate2 = rate2, shape = shape, 
                                     followup_max = followup_max)
   } else if (all(isNull_sp, isNull_fm, isNull_ap, !isNull_t1, !isNull_t1)) {
-    # # Calculate study period for given recruitment times
-    # study_period <- uniroot(f = function(study_period){eval(body_recruit) - max_info},
-    #                         interval = c(min(t_recruit1, t_recruit2), 3*max(t_recruit1, t_recruit2)),
-    #                         extendInt = "upX")$root
-    # max_info <- eval(body_recruit)
-    # n1 <- sum(t_recruit1 <= study_period)
-    # n2 <- sum(t_recruit2 <= study_period)
-    # n <- n1 + n2
+    # Calculate study period for given recruitment times
     out <- studyperiod_from_recruit(max_info = max_info, random_ratio = random_ratio, 
                                     rate1 = rate1, rate2 = rate2, shape = shape, 
                                     t_recruit1 = t_recruit1, t_recruit2 = t_recruit2)
   } else if (all(!isNull_sp, !isNull_ap, isNull_fm, isNull_t1, isNull_t1)) {
-    # # Calculate sample size for fixed accural and study period (using uniform recruitment)
-    # n <- uniroot(f = function(n){eval(body_accural) - max_info},
-    #              interval = c(2*random_ratio, 1000),
-    #              extendInt = "upX")$root
-    # max_info <- eval(body_accural)
+    # Calculate sample size for fixed accural and study period (using uniform recruitment)
     out <- samplesize_from_periods(max_info = max_info, accrual_period = accrual_period,
                                    study_period = study_period,
                                    random_ratio = random_ratio,
@@ -214,13 +169,8 @@ design_gsnb <- function(rate1, rate2, shape, power_gs, timing, esf = esf_obrien,
   reject_prob <- rbind(reject_prob_H0, reject_prob_H1)
   rownames(reject_prob) <- NULL
 
-  # out <- c(arguments[c("rate1", "rate2", "shape", "power_gs", "timing", "ratio_H0", "sig_level", "esf")],
-  #          list(power_fix = power_fix, n = n, n1 = n1, n2 = n2, max_info = max_info, critical = power_out$critical,
-  #               t_recruit1 = t_recruit1, t_recruit2 = t_recruit2,
-  #               study_period = study_period, accrual_period = accrual_period,
-  #               reject_prob = reject_prob))
   out <- c(arguments[c("rate1", "rate2", "shape", "power_gs", "timing", "ratio_H0", "sig_level", "esf")], 
-           out, list(reject_prob = reject_prob, critical = power_out$critical))
+           out, list(power_fix = power_fix, reject_prob = reject_prob, critical = power_out$critical))
   
   class(out) <- "GSNBdesign"
   out
