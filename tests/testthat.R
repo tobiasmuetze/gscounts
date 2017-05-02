@@ -1,4 +1,4 @@
-library(testthat)
-library(gsnbin)
-
-test_check("gsnbin")
+# library(testthat)
+# library(gsnbin)
+#
+# test_check("gsnbin")

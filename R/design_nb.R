@@ -1,0 +1,142 @@
+#' @name design_nb
+#' @title Clinical trials with negative binomial outcomes
+#' @description Design a clinical trial with negative binomial outcomes
+#' @param rate1 numeric; assumed rate of treatment group 1 in the alternative
+#' @param rate2 numeric; assumed rate of treatment group 2 in the alternative
+#' @param shape numeric; shape parameter
+#' @param power numeric; target power
+#' @param ratio_H0 numeric; postive number denoting the rate ratio rate_1/rate_2
+#' under the null hypothesis, i.e. the non-inferiority or superiority margin
+#' @param sig_level numeric; Type I error / significance level
+#' @param random_ratio numeric; randomization ratio n1/n2
+#' @param t_recruit1 numeric vector; recruit (i.e. study entry) times in group 1
+#' @param t_recruit2 numeric vector; recruit (i.e. study entry) times in group 2
+#' @param study_period numeric; study duration
+#' @param accrual_period numeric; accrual period
+#' @param followup_max numeric; maximum exposure time of a patient
+#' @return A list containing the following components:
+#' \item{rate1}{as input}
+#' \item{rate2}{as input}
+#' \item{shape}{as input}
+#' \item{power}{as input}
+#' \item{ratio_H0}{as input}
+#' \item{ratio_H1}{ratio \code{rate1}/\code{rate2}}
+#' \item{sig_level}{as input}
+#' \item{random_ratio}{as input}
+#' \item{t_recruit1}{as input}
+#' \item{t_recruit2}{as input}
+#' \item{study_period}{as input}
+#' \item{followup_max}{as input}
+#' \item{max_info}{maximum information}
+#' @examples
+#' # Calculate sample size for given accrual period and study duration assuming uniformal accrual
+#' out <- design_nb(rate1 = 0.0875, rate2 = 0.125, shape = 5, power = 0.8,
+#'                  ratio_H0 = 1, sig_level = 0.025,
+#'                  study_period = 4, accrual_period = 1, random_ratio = 2)
+#' out
+#' 
+#' # Calculate sample size for a fixed exposure time of 0.5 years
+#' out <- design_nb(rate1 = 4.2, rate2 = 8.4, shape = 3, power = 0.8,
+#'                  ratio_H0 = 1, sig_level = 0.025,
+#'                  followup_max = 0.5, random_ratio = 2)
+#' out
+#' 
+#' # Calculate study period for given recruitment time
+#' t_recruit1 <- seq(0, 1.25, length.out = 1200)
+#' t_recruit2 <- seq(0, 1.25, length.out = 800)
+#' out <- design_nb(rate1 = 0.0875, rate2 = 0.125, shape = 5, power = 0.8,
+#'                  ratio_H0 = 1, sig_level = 0.025,
+#'                  t_recruit1 = t_recruit1, t_recruit2 = t_recruit2)
+#' @import stats
+#' @export
+design_nb <- function(rate1, rate2, shape, power, ratio_H0 = 1, sig_level,
+                      random_ratio = 1, t_recruit1 = NULL,
+                      t_recruit2 = NULL, study_period = NULL, accrual_period = NULL,
+                      followup_max = NULL) {
+  
+  arguments <- as.list(environment())
+  # Calculate maximum information required to obtain power
+  max_info <- (qnorm(1-sig_level) + qnorm(power))^2 / log(rate1 / rate2 / ratio_H0)^2
+  
+  # # Determine maximum information for given fix follow-up time
+  # body_followmax <- quote({
+  #   n1 <- ceiling(n / (1 + 1/random_ratio))
+  #   n2 <- ceiling(n / (1 + random_ratio))
+  #   n <- n1 + n2
+  #   get_info_gsnb(rate1 = rate1, rate2 = rate2, shape = shape,
+  #                 followup1 = rep(followup_max, times = n1),
+  #                 followup2 = rep(followup_max, times = n2))
+  # })
+  # # Determine maximum information for given recruitment times with variable study period
+  # body_recruit <- quote({
+  #   isRec1 <- (t_recruit1 <= study_period)
+  #   isRec2 <- (t_recruit2 <= study_period)
+  #   get_info_gsnb(rate1 = rate1, rate2 = rate2, shape = shape,
+  #                 followup1 = study_period - t_recruit1[isRec1],
+  #                 followup2 = study_period - t_recruit2[isRec2])
+  # })
+  # # Determine maximum information for given accrual and study period
+  # # with variable sample size from accural
+  # body_accrual <- quote({
+  #   n1 <- ceiling(n / (1 + 1/random_ratio))
+  #   n2 <- ceiling(n / (1 + random_ratio))
+  #   n <- n1 + n2
+  #   t_recruit1 <- seq(0, accrual_period, length.out = n1)
+  #   t_recruit2 <- seq(0, accrual_period, length.out = n2)
+  #   get_info_gsnb(rate1 = rate1, rate2 = rate2, shape = shape,
+  #                 followup1 = study_period - t_recruit1,
+  #                 followup2 = study_period - t_recruit2)
+  # })
+  
+  
+  isNull_fm <- is.null(followup_max)
+  isNull_sp <- is.null(study_period)
+  isNull_ap <- is.null(accrual_period)
+  isNull_t1 <- is.null(t_recruit1)
+  isNull_t2 <- is.null(t_recruit2)
+  
+  # Calcualte the missing design value
+  if (all(!isNull_fm, isNull_sp, isNull_ap)) {
+    # # Calculate the sample size for a fixed individual follow-up
+    # n <- uniroot(f = function(n){eval(body_followmax) - max_info},
+    #              interval = c(2*random_ratio, 1000), extendInt = "upX")$root
+    # max_info <- eval(body_followmax)
+    out <- samplesize_from_followup(max_info = max_info, random_ratio = random_ratio, 
+                                    rate1 = rate1, rate2 = rate2, shape = shape, 
+                                    followup_max = followup_max)
+  } else if (all(isNull_sp, isNull_fm, isNull_ap, !isNull_t1, !isNull_t1)) {
+    # if (length(t_recruit1)/length(t_recruit2) != random_ratio)
+    #   warning(paste("k will be set to ", length(t_recruit1)/length(t_recruit2)))
+    # # Calculate study period for given recruitment times
+    # study_period <- uniroot(f = function(study_period){eval(body_recruit) - max_info},
+    #                         interval = c(min(t_recruit1, t_recruit2), 3*max(t_recruit1, t_recruit2)),
+    #                         extendInt = "upX")$root
+    # max_info <- eval(body_recruit)
+    # n1 <- sum(t_recruit1 <= study_period)
+    # n2 <- sum(t_recruit2 <= study_period)
+    # n <- n1 + n2
+    out <- studyperiod_from_recruit(max_info = max_info, random_ratio = random_ratio, 
+                                    rate1 = rate1, rate2 = rate2, shape = shape, 
+                                    t_recruit1 = t_recruit1, t_recruit2 = t_recruit2)
+  } else if (all(!isNull_sp, !isNull_ap, isNull_fm, isNull_t1, isNull_t1)) {
+    # Calculate sample size for fixed accrual and study period (using uniform recruitment)
+    # n <- uniroot(f = function(n){eval(body_accrual) - max_info},
+    #              interval = c(2*random_ratio, 1000),
+    #              extendInt = "upX")$root
+    # max_info <- eval(body_accrual)
+    out <- samplesize_from_periods(max_info = max_info, accrual_period = accrual_period, 
+                                   study_period = study_period, 
+                                   random_ratio = random_ratio,
+                                   rate1 = rate1, rate2 = rate2, shape = shape)
+  } else {
+    stop("No appropriate combination of input arguments is defined")
+  }
+  
+  
+  # out <- c(arguments[c("rate1", "rate2", "shape", "power", "ratio_H0", "sig_level")],
+  #          list(n = n, n1 = n1, n2 = n2, max_info = max_info,
+  #               t_recruit1 = t_recruit1, t_recruit2 = t_recruit2,
+  #               study_period = study_period, accrual_period = accrual_period))
+  out <- c(arguments[c("rate1", "rate2", "shape", "power", "ratio_H0", "sig_level")], out)
+  out
+}

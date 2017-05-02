@@ -1,0 +1,118 @@
+---
+title: "<center>An introduction to planning group sequential designs for the negative binomial distribution using gscounts</center>"
+author: "<center>Tobias Mütze</center>"
+date: "<center>`r Sys.Date()`</center>"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+---
+  
+  The package `gscounts` provides a collection of functions for planning group sequential designs for the negative binomial distribution. In particular the package provides tools to determine
+  
+  - power and sample size for various types of accrual and follow-up times
+  - critical values for group sequential testing
+  
+  
+Until now, the focus is on group sequential designs for a one-sided hypothesis. The functions focus on stopping for efficacy, stopping for futility has not been implemented yet.
+
+---
+
+## Statistical model
+
+In a group sequential design the data is not just analyzed once at the end of the study but also while the trial is still ongoing. 
+We define $K$ as the total number of looks into the data.
+We model the number of events of patient $j=1,\ldots, n_{i}$ in treatment group $i=1,2$ at look $k=1,\ldots, K$ as a homogeneous Poisson point process with rate $\lambda_{ij}$. 
+Let $t_{ijk}$ be the exposure time of patient $j$ in treatment group $i$ at look $k$.
+After an exposure time of $t_{ijk}$, the number of events $Y_{ijk}$ of patient $j$ in treatment group $i$ at look $k$ given the rate $\lambda_{ij}$ is Poisson distributed with rate $t_{ijk}\lambda_{ij}$, that is 
+\begin{align*}
+Y_{ijk}|\lambda_{ij} \sim \operatorname{Pois}(t_{ijk} \lambda_{ij}).
+\end{align*}
+In other words, the event rate $\lambda_{ij}$ is subject specific.
+The between patient heterogeneity in the event rates is modeled by assuming the rates $\lambda_{ij}$ are gamma distributed with shape $\alpha=1/\phi$ and rate $\beta=1/(\phi \mu_i)$, i.e.
+\begin{align*}
+\lambda_{ij} \sim \Gamma\left(\frac{1}{\phi}, \frac{1}{\phi \mu_i}\right).
+\end{align*}
+Then, the random variable $Y_{ijk}$ is marginally negative binomial distributed with rate $t_{ijk}\mu_i$ and shape parameter $\phi$, i.e. 
+\begin{align*}
+Y_{ijk} \sim \operatorname{NB}\left(t_{ijk}\mu_i, \phi\right).
+\end{align*}
+The probability mass function of $Y_{ijk}$ is given by
+\begin{align*}
+\mathbb{P}\left(Y_{ijk}=y\right)=\frac{\Gamma(y + 1/\phi)}{\Gamma(1/\phi)y!}\left(\frac{1}{1+\phi t_{ijk} \mu_i}\right)^{1/\phi} \left(\frac{\phi t_{ijk}\mu_i}{1 + \phi t_{ijk}\mu_i }\right)^{y},\qquad y=0,1,2,\ldots.
+\end{align*}
+The expected value and the variance of the random variable $Y_{ij}$ are given by
+\begin{align*}
+\mathbb{E}\left[Y_{ijk}\right] &= t_{ijk} \mu_i, \\
+\operatorname{Var}\left[Y_{ijk}\right] &= t_{ijk} \mu_i (1 + \phi t_{ijk} \mu_i).
+\end{align*}
+Moreover, as the shape parameter approaches zero, the negative binomial distribution converges to a Poisson distribution which also means that the overdispersion increases in $\phi$.
+In this manuscript we consider smaller values of $\mu_i$ to be better.
+The statistical hypothesis testing problem of interest is 
+\begin{align*}
+H_0: \frac{\mu_1}{\mu_2}\geq \delta \quad \text{vs.} \quad H_1: \frac{\mu_1}{\mu_2} < \delta.
+\end{align*}
+For $\delta\in (1,\infty)$ non-inferiority of treatment 1 compared to treatment 2 is tested and for $\delta \in (0,1]$ superiority of treatment 1 compared to treatment 2 is tested.
+We denote the rate ratio as $\theta=\mu_1/\mu_2$ and the rate ratio under the alternative is given by $\theta^{*}$. 
+Let the log-rate be $\beta_{i} = \log(\mu_i)$. 
+We focus on group sequential designs which allow stopping for efficacy and but not stopping for futility. 
+That means at looks $k=1,\ldots, K-1$ the trial is stopped for efficacy if the null hypothesis $H_0$ can be rejected. 
+If the null hypothesis $H_0$ cannot be rejected at stop $k=1,\ldots, K-1$, the study is continued. 
+However, the theoretical considerations made in this manuscript can be easily adapted to group sequential trials which allow stopping for both efficacy and futility.
+
+## Planning group sequential designs with negative binomial data
+
+In the following the functions of the R package gscounts for planning group sequential designs with negative binomial data are explained. First of all, the R package is loaded.
+
+```{r load R package, echo=TRUE}
+library(gscounts)
+```
+### Sample size calculation for unequal exposure times with uniform recruitment
+The first case study focus on determining the sample size for a group sequential design where we assume a rate ratio in the alternative of $\mu_1 / \mu_2 = 0.0875/0.125=0.7$ to be tested with a margin $\delta=1$. The shape parameter is chosen to be $\phi = 0.8$. The target power for the test in the group sequential design is $1-\beta=0.8$, the interim analysis is performed at an information time of $50\%$, and the O'Brien-Fleming-type error spending function is considered to allocated the significance level $\alpha=0.025$. 
+Furthermore, it is assumed that patients are entering the study uniformly over a period of 1.25 years and that the study ends 2.75 years after the last patient entered, i.e. after 4 year in total.
+The respective sample size can then be calculated using the R function `design_gsnb`.
+
+```{r, echo=TRUE}
+out <- design_gsnb(rate1 = 0.0875, rate2 = 0.125, shape = 5, power_gs = 0.8,
+                   timing = c(0.5, 1), esf = esf_obrien,
+                   ratio_H0 = 1, sig_level = 0.025,
+                   study_period = 4, accrual_period = 1.25, random_ratio = 1)
+out
+
+```
+
+The R function `design_gsnb` returns an object of class *GSNBdesign* which contains the relevant design information. To assess the single components and especially the ones which are not shown in the comprehensive output above such as the assumed study entry times and the critical values, the notation `out$` followed by one following names is used.
+```{r, echo=FALSE}
+names(out)
+```
+
+### Sample size calculation for equal exposure times
+
+In some cases patients are only followed for a prespecified time period which is identical for all patients. In this case the syntax for determing the sample size is slightly different. 
+For a Pocock-type error spending function and a planned follow-up time of 0.5 years for every patient the sample size of the group sequential design is determined by the following R code.
+
+```{r}
+out <- design_gsnb(rate1 = 4.2, rate2 = 8.4, shape = 3, power_gs = 0.8,
+                   timing = c(0.5, 1), esf = esf_pocock,
+                   ratio_H0 = 1, sig_level = 0.025,
+                   followup_max = 0.5, random_ratio = 1)
+out
+```
+
+### Calculation of study duration given the study entry times
+
+In the following we assume that the patients' study entry times are given and calculate the required study duration for a precispied power.
+We assume that the study entry times are identical between the groups.
+
+```{r}
+expose <- seq(0, 1.25, length.out = 1042)
+out <- design_gsnb(rate1 = 0.0875, rate2 = 0.125, shape = 5, power_gs = 0.8,
+                   timing = c(0.5, 1), esf = esf_obrien,
+                   ratio_H0 = 1, sig_level = 0.025,
+                   t_recruit1 = expose, t_recruit2 = expose, random_ratio = 1)
+out
+```
+

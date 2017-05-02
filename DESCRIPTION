@@ -1,4 +1,4 @@
-Package: gsnbin
+Package: gscounts
 Type: Package
 Title: Group Sequential Designs with Negative Binomial Data
 Version: 0.0.1-9000
@@ -9,9 +9,7 @@ Description: Design and monitoring of group sequential designs with negative
     binomial data.
 Depends:
     R (>= 3.0.0)
-Imports:
-    stats,
-    MASS
+Imports: stats, MASS, ggplot2, mvtnorm, devtools
 Suggests:
     testthat,
     knitr,
@@ -22,4 +20,4 @@ URL: https://github.com/tobiasmuetze/gsnbin
 BugReports: https://github.com/tobiasmuetze/gsnbin/issues
 VignetteBuilder: knitr
 LazyData: true
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.1
