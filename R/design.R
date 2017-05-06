@@ -16,7 +16,6 @@
 #' Must have the same length as argument \code{timing}.
 #' @return data frame with rejection (i.e. boundary crossing) probabilities
 #' @import mvtnorm
-#' @import utils
 #' @keywords internal
 get_rejectprob_gsnb <- function(rate_ratio, ratio_H0 = 1, critical, max_info, timing,
                                 n_vec = NULL, study_period_vec = NULL) {
@@ -122,6 +121,8 @@ design_gsnb <- function(rate1, rate2, shape, power_gs, timing, esf = esf_obrien,
                         t_recruit2 = NULL, study_period = NULL, accrual_period = NULL,
                         followup_max = NULL) {
 
+  # Initialize object of class gsnb
+  
   arguments <- as.list(environment())
   K <- length(timing)
   # Calculate maximum information required to obtain power power_gs

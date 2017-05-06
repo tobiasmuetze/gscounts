@@ -23,6 +23,7 @@
 #' \item{critical}{critical values for each look}
 #' @import mvtnorm
 #' @import stats
+#' @export
 power_gsnb <- function(ratio_H1, max_info = NULL, power_gs = NULL, timing, esf = esf_obrien, ratio_H0 = 1, sig_level, ...) {
 
   # Parameter checks
