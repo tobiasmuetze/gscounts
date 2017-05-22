@@ -44,6 +44,8 @@ with \code{K} the number of analyses, i.e. (K-1) interim analyses and final anal
 \item{accrual_period}{numeric; accrual period}
 
 \item{followup_max}{numeric; maximum exposure time of a patient}
+
+\item{...}{further arguments to be passed to the error spending function}
 }
 \value{
 A list with class "gsnb" containing the following components:

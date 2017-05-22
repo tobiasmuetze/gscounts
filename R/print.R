@@ -1,21 +1,3 @@
-#' print.GSNBpower
-#' @description print method for instance of class GSNBpower
-#' @param x an object of class GSNBpower
-#' @param ... optional arguments to print or plot methods
-#' @export
-print.GSNBpower <- function(x, ...) {
-  cat("\t Power for group sequential design with negative binomial outcomes\n\n")
-  cat("Rate ratio under null hypothesis: ", format(x$ratio_H0, digits = 4), "\n")
-  cat("Rate ratio under alternative: ", format(x$ratio_H1, digits = 4), "\n")
-  cat("Significance level: ", format(x$sig_level, digits = 4), "\n")
-  cat("Analyses: ", length(x$timing), "\n")
-  cat("Information times: ", paste(format(x$timing, digits = 4), collapse = ", "), "\n")
-  cat("Maximum information: ", paste(format(x$max_info, digits = 4), collapse = ", "), "\n")
-  cat("Power group sequential design: ", format(x$power_gs, digits = 4), "\n")
-  cat("Power fixed design: ", format(x$power_fix, digits = 4), "\n")
-}
-
-
 #' print.gsnb
 #' @description print method for instance of class gsnb
 #' @param x an object of class gsnb
@@ -49,33 +31,6 @@ print.gsnb <- function(x, ...) {
   if (!is.null(x$followup_max)) cat(" Follow-up times: ", x$followup_max, "\n")
   
   # Output of critical values and spending
-  # critical_text <- "\nCritical values and spending at each data look"
-  # summary_critical <- data.frame(look = c(seq_along(x$timing), "Total"), 
-  #                                infotime = c(x$timing, NA), 
-  #                                eff_spend = c(x$efficacy$spend, sum(x$efficacy$spend)), 
-  #                                eff_critical = c(x$efficacy$critical, NA), 
-  #                                stringsAsFactors = FALSE)
-  # summary_critical$infotime <- formatC(summary_critical$infotime, 
-  #                                      digits = 2, format = "g", width = 4)
-  # summary_critical$eff_spend <- formatC(summary_critical$eff_spend,  digits = 4, 
-  #                                       format = "g", width = 10, drop0trailing = T)
-  # summary_critical$eff_critical <-  formatC(summary_critical$eff_critical, digits = 4, format = "f", width = 6)
-  # colnames(summary_critical) <- c("Look", "Information time", "Spending", "Boundary")
-  # if (!is.null(x$futility)) {
-  #   summary_critical <- cbind(summary_critical,
-  #                             data.frame(fut_spend = c(x$futility$spend, 1-x$power),
-  #                                        fut_critical = c(x$futility$critical, NA)))
-  #   summary_critical$fut_spend <- formatC(summary_critical$fut_spend,  digits = 4, format = "fg", width = 10)
-  #   summary_critical$fut_critical <-  formatC(summary_critical$fut_critical, digits = 4, format = "f", width = 6)
-  #   colnames(summary_critical)[5:6] <- c("Spending", "Boundary")
-  #   futility_text <- paste0(". The futility spending is ", x$futility$type, ".")
-  #   critical_text <- paste0(critical_text, futility_text)
-  # }
-  # cat(paste0(critical_text, "\n"))
-  # sprintf(summary_critical, row.names = FALSE)
-  # 
-  
-  # Output of critical values and spending
   critical_text <- "\nCritical values and spending at each data look"
   if (!is.null(x$futility)) {
     futility_text <- paste0(". The futility spending is ", x$futility$type, ".")
@@ -98,32 +53,6 @@ print.gsnb <- function(x, ...) {
     cat(row_string)
     cat("\n")
   }
-  
-  # for(i in seq_along(x$timing))
-  #   summary_critical <- data.frame(look = c(seq_along(x$timing), "Total"), 
-  #                                infotime = c(x$timing, NA), 
-  #                                eff_spend = c(x$efficacy$spend, sum(x$efficacy$spend)), 
-  #                                eff_critical = c(x$efficacy$critical, NA), 
-  #                                stringsAsFactors = FALSE)
-  # summary_critical$infotime <- formatC(summary_critical$infotime, 
-  #                                      digits = 2, format = "g", width = 4)
-  # summary_critical$eff_spend <- formatC(summary_critical$eff_spend,  digits = 4, 
-  #                                       format = "g", width = 10, drop0trailing = T)
-  # summary_critical$eff_critical <-  formatC(summary_critical$eff_critical, digits = 4, format = "f", width = 6)
-  # colnames(summary_critical) <- c("Look", "Information time", "Spending", "Boundary")
-  # if (!is.null(x$futility)) {
-  #   summary_critical <- cbind(summary_critical,
-  #                             data.frame(fut_spend = c(x$futility$spend, 1-x$power),
-  #                                        fut_critical = c(x$futility$critical, NA)))
-  #   summary_critical$fut_spend <- formatC(summary_critical$fut_spend,  digits = 4, format = "fg", width = 10)
-  #   summary_critical$fut_critical <-  formatC(summary_critical$fut_critical, digits = 4, format = "f", width = 6)
-  #   colnames(summary_critical)[5:6] <- c("Spending", "Boundary")
-  #   futility_text <- paste0(". The futility spending is ", x$futility$type, ".")
-  #   critical_text <- paste0(critical_text, futility_text)
-  # }
-  # cat(paste0(critical_text, "\n"))
-  # sprintf(summary_critical, row.names = FALSE)
-  # 
   
   # Probability of stopping for efficacy (i.e. rejection H0)
   cat("\nProbabilities of stopping for efficacy, i.e. for rejecting H0\n")

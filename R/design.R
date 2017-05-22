@@ -1,63 +1,3 @@
-#' @name get_rejectprob_gsnb
-#' @title Calcualte rejection probabilities
-#' @description Calcualte analyses specific rejection probabilities and
-#' expected information level, study duration, and sample size
-#' @param rate_ratio The rate ratio for which the rejection probability is calculated.
-#' @param ratio_H0 The rate ratio in the null hypothesis against which the test is performed.
-#' @param critical The vector of critical values used for the test. Must have
-#' the same length as argument \code{timing}.
-#' @param max_info The maximum information of the study.
-#' @param timing The vector of information times at which the tests are performed.
-#' @param n_vec An optional vector with \code{n_vec[i]} indicating the number of
-#' subjects recruited at information time \code{timing[i]}.
-#' Must have the same length as argument \code{timing}.
-#' @param study_period_vec An optional vector with \code{study_period_vec[i]}
-#' indicating the study time at information time \code{timing[i]}.
-#' Must have the same length as argument \code{timing}.
-#' @return data frame with rejection (i.e. boundary crossing) probabilities
-#' @import mvtnorm
-#' @keywords internal
-get_rejectprob_gsnb <- function(rate_ratio, ratio_H0 = 1, critical, max_info, timing,
-                                n_vec = NULL, study_period_vec = NULL) {
-  
-  k <- length(timing)
-  effect_size <- log(rate_ratio) - log(ratio_H0)
-  covar <- get_covar(timing)
-  
-  # Calculate analysis specific rejection probabilities
-  reject_prob <- numeric(k)
-  reject_prob[1] <- pnorm(critical[1], mean = effect_size * sqrt(timing[1] * max_info))
-  for(i in 2:k) {
-    lower <- c(critical[1:(i-1)], -Inf)
-    upper <- c(rep(Inf, times = i-1), critical[i])
-    mean_vec <- effect_size * sqrt(timing[1:i] * max_info)
-    reject_prob[i] <- pmvnorm(lower = lower, upper = upper,
-                              mean = mean_vec, sigma = covar[1:i, 1:i])[1]
-  }
-  
-  # Expected information level
-  expected_info <- sum(reject_prob * timing * max_info) + (1 - sum(reject_prob)) * max_info
-  # Initialize output vector
-  out <- c(rate_ratio, reject_prob, sum(reject_prob), expected_info)
-  names(out) <- c("Rate ratio", paste0("Analysis ", 1:k), "Total", "E[I]")
-  
-  # Calculate expected sample size and study duration
-  if (!is.null(n_vec)) {
-    expected_ss <- sum(reject_prob * n_vec) + (1 - sum(reject_prob)) * tail(n_vec, n = 1)
-    out <- c(out, expected_ss)
-    names(out)[length(out)] <- "E[n]"
-  }
-  if (!is.null(study_period_vec)) {
-    expected_study_period <- sum(reject_prob * study_period_vec) + (1 - sum(reject_prob)) * tail(study_period_vec, n = 1)
-    out <- c(out, expected_study_period)
-    names(out)[length(out)] <- "E[t]"
-  }
-  # Return value
-  out
-}
-
-
-
 #' @name add_stopping_prob
 #' @title Calcualte stopping probabilities
 #' @description Calcualte analyses specific stopping probabilities and
@@ -170,6 +110,7 @@ add_stopping_prob <- function(x) {
 #' @param study_period numeric; study duration
 #' @param accrual_period numeric; accrual period
 #' @param followup_max numeric; maximum exposure time of a patient
+#' @param ... further arguments to be passed to the error spending function
 #' @return A list with class "gsnb" containing the following components:
 #' \item{rate1}{as input}
 #' \item{rate2}{as input}

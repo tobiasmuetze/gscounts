@@ -1,25 +1,24 @@
 Package: gscounts
 Type: Package
-Title: Group Sequential Designs with Negative Binomial Data
-Version: 0.0.1-9000
+Title: Group Sequential Designs with Negative Binomial Outcomes
+Version: 0.0.1
 Authors@R: person("Tobias", "Muetze", role=c("aut","cre"),
                     email="tobias.muetze@outlook.com")
 Author: Tobias Muetze [aut, cre]
-Description: Design and monitoring of group sequential designs with negative
-    binomial data.
+Description: Design and analysis of group sequential designs with negative
+    binomial outcomes.
 Depends:
     R (>= 3.0.0)
-Imports: stats, MASS, ggplot2, mvtnorm, devtools, Rcpp(>= 0.12.9)
+Imports: stats, MASS, ggplot2, devtools, Rcpp(>= 0.12.9)
 Suggests:
     testthat,
     knitr,
     rmarkdown,
-    dplyr,
-    MASS
+    dplyr
 License: GPL (>= 2)
 NeedsCompilation: yes
-URL: https://github.com/tobiasmuetze/gsnbin
-BugReports: https://github.com/tobiasmuetze/gsnbin/issues
+URL: https://github.com/tobiasmuetze/gscounts
+BugReports: https://github.com/tobiasmuetze/gscounts/issues
 VignetteBuilder: knitr
 LazyData: true
 LinkingTo: Rcpp

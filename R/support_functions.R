@@ -35,7 +35,15 @@ samplesize_from_periods <- function(max_info, accrual_period, study_period, rand
                interval = c(2*random_ratio, 1000),
                extendInt = "upX")$root
   # Update the information level with the latest sample size
-  max_info <- eval(body_periods)
+  n1 <- ceiling(n / (1 + 1/random_ratio))
+  n2 <- ceiling(n / (1 + random_ratio))
+  n <- n1 + n2
+  t_recruit1 <- seq(0, accrual_period, length.out = n1)
+  t_recruit2 <- seq(0, accrual_period, length.out = n2)
+  max_info <- get_info_gsnb(rate1 = rate1, rate2 = rate2, dispersion = shape,
+                            followup1 = study_period - t_recruit1,
+                            followup2 = study_period - t_recruit2)
+  
   list(n = n, n1 = n1, n2 = n2, t_recruit1 = t_recruit1, 
        t_recruit2 = t_recruit2, max_info = max_info, 
        accrual_period = accrual_period, study_period = study_period)
@@ -98,7 +106,13 @@ samplesize_from_followup <- function(max_info, random_ratio, rate1,
                interval = c(2*random_ratio, 1000), extendInt = "upX")$root
   
   # Update the information level with the latest sample size
-  max_info <- eval(body_followmax)
+  n1 <- ceiling(n / (1 + 1/random_ratio))
+  n2 <- ceiling(n / (1 + random_ratio))
+  n <- n1 + n2
+  max_info <- get_info_gsnb(rate1 = rate1, rate2 = rate2, dispersion = shape,
+                            followup1 = rep(followup_max, times = n1),
+                            followup2 = rep(followup_max, times = n2))
+  
   
   list(n = n, n1 = n1, n2 = n2, max_info = max_info, 
        followup_max = followup_max)
