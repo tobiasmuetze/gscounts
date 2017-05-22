@@ -18,6 +18,8 @@ double cppnorm(double x) {
   return 0.5 * erfc(-x * M_SQRT1_2);
 }
 
+// side="lower": solves for c: P(lower[1] < X1 < upper[1], ..., -Inf < X < c) = error_spend
+// side="upper": solves for c: P(lower[1] < X1 < upper[1], ...,  c < X < Inf) = error_spend
 // [[Rcpp::export]]
 double cpp_calc_critical(int r, NumericVector lower, NumericVector upper, double error_spend, NumericVector information, double theta, String side) {
   
@@ -132,71 +134,79 @@ double cpp_calc_critical(int r, NumericVector lower, NumericVector upper, double
     }
   }
   
-  // Newton-Rapshon algorithm for calculating the limit of interval (-Inf, crit) (J&T, p.353f)
-    // starting value search for Newton-Rapshon
-    crit = -4;
-    f_left = 0;
-    while (crit <= 3) {
-      // calculate f
-      f_right = -error_spend;
+  // Newton-Rapshon algorithm for calculating the limit of interval (-Inf, crit) (side = "lower") or (crit, Inf) (side = "upper") (J&T, p.353f) 
+  // starting value search for Newton-Rapshon
+  crit = -5 + theta * sqrt_info_k;
+  f_left = 0;
+  while (crit <= 5 + theta * sqrt_info_k) {
+    // calculate f
+    f_right = -error_spend;
+    for(int i = 0; i < m; i++) {
+      if (h(k-1, i) != 0) {
+        x = (grid(k-1, i) * sqrt_info_k1 + theta * delta - crit * sqrt_info_k) / sqrt_delta;
+        if (side == "lower")
+          f_right += h(k-1, i) * (1 - cppnorm(x));
+        if (side == "upper")
+          f_right += h(k-1, i) * cppnorm(x);
+      }
+    }
+    // printf("left right %f %f\n", f_left, f_right);
+    // stop stat value search if root is considered interval
+    if (((f_left < 0) && (f_right > 0)) || ((f_left > 0) && (f_right < 0))) {
+      crit = crit - 0.5;
+      break;
+    }
+    else {
+      f_left = f_right;
+      crit += 1;
+    }
+  }
+  
+  // No solution exists if no starting value was found
+  if (crit >= 5 + theta * sqrt_info_k) {
+    if (side == "lower")
+      return(99999);      
+    if (side == "upper")
+      return(-99999);      
+  }
+  
+  while (fabs(f) > eps) {
+    if (n_iterate > 20) {
+      printf("Maximum number of iterations reached");
+      break;
+    }
+    
+    // calculate f = function which root must be found
+    f = -error_spend;
+    f_grad = 0;
+    // calculate f and derivation of f
+    if (side == "lower") {
       for(int i = 0; i < m; i++) {
         if (h(k-1, i) != 0) {
           x = (grid(k-1, i) * sqrt_info_k1 + theta * delta - crit * sqrt_info_k) / sqrt_delta;
-          if (side == "lower")
-            f_right += h(k-1, i) * (1 - cppnorm(x));
-          if (side == "upper")
-            f_right += h(k-1, i) * cppnorm(x);
+          f += h(k-1, i) * (1 - cppnorm(x));
+          f_grad += h(k-1, i) * f_k(crit, information(k), grid(k-1, i), information(k-1), theta);
+          continue;
         }
-      }
-      // printf("left right %f %f\n", f_left, f_right);
-      // stop stat value search if root is considered interval
-      if (((f_left < 0) && (f_right > 0)) || ((f_left > 0) && (f_right < 0))) {
-        crit = crit - 0.5;
-        break;
-      }
-      else {
-        f_left = f_right;
-        crit += 1;
       }
     }
-   
-    while (fabs(f) > eps) {
-      if (n_iterate > 20) {
-        printf("Maximum number of iterations reached");
-        break;
-      }
-      
-      // calculate f = function which root must be found
-      f = -error_spend;
-      f_grad = 0;
-      // calculate f and derivation of f
-      if (side == "lower") {
-        for(int i = 0; i < m; i++) {
-          if (h(k-1, i) != 0) {
-            x = (grid(k-1, i) * sqrt_info_k1 + theta * delta - crit * sqrt_info_k) / sqrt_delta;
-            f += h(k-1, i) * (1 - cppnorm(x));
-            f_grad += h(k-1, i) * f_k(crit, information(k), grid(k-1, i), information(k-1), theta);
-            continue;
-          }
+    if (side == "upper") {
+      for(int i = 0; i < m; i++) {
+        if (h(k-1, i) != 0) {
+          x = (grid(k-1, i) * sqrt_info_k1 + theta * delta - crit * sqrt_info_k) / sqrt_delta;
+          f += h(k-1, i) * cppnorm(x);
+          f_grad -= h(k-1, i) * f_k(crit, information(k), grid(k-1, i), information(k-1), theta);
+          continue;
         }
       }
-      if (side == "upper") {
-        for(int i = 0; i < m; i++) {
-          if (h(k-1, i) != 0) {
-            x = (grid(k-1, i) * sqrt_info_k1 + theta * delta - crit * sqrt_info_k) / sqrt_delta;
-            f += h(k-1, i) * cppnorm(x);
-            f_grad -= h(k-1, i) * f_k(crit, information(k), grid(k-1, i), information(k-1), theta);
-            continue;
-          }
-        }
-      }
-      
-      
-      // Newton step
-      crit = crit - f / f_grad;
-      // printf("iter f fgred crit %d %f %f %f\n", n_iterate, f, f_grad, crit);
-      n_iterate++;
     }
+    
+    
+    // Newton step
+    crit = crit - f / f_grad;
+    // printf("iter f fgred crit %d %f %f %f\n", n_iterate, f, f_grad, crit);
+    n_iterate++;
+  }
   
   
   
@@ -293,7 +303,7 @@ double cpp_pmultinorm(int r, NumericVector lower, NumericVector upper, NumericVe
     if (weight(0, i) != 0)
       h(0, i) = weight(0, i) * f_k(grid(0, i), information(0), 0, 0, theta);
   }
-    
+  
   for(int i = 1; i < k-1; i++) { // number of integrals
     for(int j = 0; j < m; j++) {
       if (weight(i, j) != 0) {
@@ -308,13 +318,13 @@ double cpp_pmultinorm(int r, NumericVector lower, NumericVector upper, NumericVe
       }
     }
   }
-
+  
   // Calculate integral using Formula (19.8) J&T
   delta = information(k-1) - information(k-2);
   sqrt_delta = sqrt(delta);
   sqrt_info_k1 = sqrt(information(k-1));
   sqrt_info_k2 = sqrt(information(k-2));
-
+  
   for(int i = 0; i < m; i++) {
     if (h(k-2, i) != 0) {
       if (lower(k-1) == -INFINITY) {

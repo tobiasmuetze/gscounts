@@ -25,37 +25,37 @@
 #' @import stats
 #' @export
 power_gsnb <- function(ratio_H1, max_info = NULL, power_gs = NULL, timing, esf = esf_obrien, ratio_H0 = 1, sig_level, ...) {
-
+  
   # Parameter checks
   stopifnot((ratio_H1 > 0) && (ratio_H1 < ratio_H0))
   stopifnot(all(timing > 0) && all(timing <= 1) && (tail(timing, n = 1) == 1) && all(diff(timing) > 0))
   stopifnot(is.null(max_info) || (max_info > 0))
   stopifnot((sig_level > 0) && (sig_level < 1))
   stopifnot(is.null(power_gs) || ((power_gs > sig_level) && (power_gs < 1)))
-
+  
   arguments <- c(as.list(environment()), list(...))
-
+  
   # Number of analyses and effect size
   K <- length(timing)
   effect_size <- log(ratio_H1) - log(ratio_H0)
-
+  
   # Calculate the canonical form covariance matrix
   covar <- get_covar(timing)
-
+  
   # Critical values
   ## Vector with type I errors for each stage
   esf_out <- esf(t = timing, sig_level = sig_level, ...)
   alloc_error <- c(esf_out[1], diff(esf_out))
   ## Calculate the critical values
   critical <- get_critical_values(timing = timing, alloc_error = alloc_error)
-
+  
   # Power in group sequential design
   power_body <- quote({
     info_vec <- max_info * timing
     mean_vec <- effect_size * sqrt(info_vec)
     1 - pmvnorm(lower = critical, upper = Inf, mean = mean_vec, sigma = covar)[1]
   })
-
+  
   # Calculate the missing value
   if (is.null(power_gs)) {
     power_gs <- eval(power_body)

@@ -2,33 +2,38 @@
 % Please edit documentation in R/design.R
 \name{design_gsnb}
 \alias{design_gsnb}
-\title{Design a group sequential trial with negative binomial data}
+\title{Group sequential design with negative binomial outcomes}
 \usage{
-design_gsnb(rate1, rate2, shape, power_gs, timing, esf = esf_obrien,
-  ratio_H0 = 1, sig_level, random_ratio = 1, t_recruit1 = NULL,
-  t_recruit2 = NULL, study_period = NULL, accrual_period = NULL,
-  followup_max = NULL)
+design_gsnb(rate1, rate2, dispersion, ratio_H0 = 1, random_ratio = 1, power,
+  sig_level, timing, esf = obrien, esf_futility = NULL, futility = NULL,
+  t_recruit1 = NULL, t_recruit2 = NULL, study_period = NULL,
+  accrual_period = NULL, followup_max = NULL, ...)
 }
 \arguments{
 \item{rate1}{numeric; assumed rate of treatment group 1 in the alternative}
 
 \item{rate2}{numeric; assumed rate of treatment group 2 in the alternative}
 
-\item{shape}{numeric; shape parameter}
+\item{dispersion}{numeric; dispersion (shape) parameter of negative binomial distribution}
 
-\item{power_gs}{numeric; target power of group sequential design}
+\item{ratio_H0}{numeric; postive number denoting the rate ratio rate_1/rate_2
+under the null hypothesis, i.e. the non-inferiority or superiority margin}
+
+\item{random_ratio}{numeric; randomization ratio n1/n2}
+
+\item{power}{numeric; target power of group sequential design}
+
+\item{sig_level}{numeric; Type I error / significance level}
 
 \item{timing}{numeric vector; 0 < \code{timing[1]} < ... < \code{timing[K]} = 1
 with \code{K} the number of analyses, i.e. (K-1) interim analyses and final analysis}
 
 \item{esf}{function; error spending function}
 
-\item{ratio_H0}{numeric; postive number denoting the rate ratio rate_1/rate_2
-under the null hypothesis, i.e. the non-inferiority or superiority margin}
+\item{esf_futility}{function; futility error spending function}
 
-\item{sig_level}{numeric; Type I error / significance level}
-
-\item{random_ratio}{numeric; randomization ratio n1/n2}
+\item{futility}{character; either \code{"binding"}, \code{"nonbinding"}, or 
+\code{NULL} for binding, nonbinding, or no futility boundaries}
 
 \item{t_recruit1}{numeric vector; recruit (i.e. study entry) times in group 1}
 
@@ -41,47 +46,69 @@ under the null hypothesis, i.e. the non-inferiority or superiority margin}
 \item{followup_max}{numeric; maximum exposure time of a patient}
 }
 \value{
-A list with class "GSNBdesign" containing the following components:
+A list with class "gsnb" containing the following components:
 \item{rate1}{as input}
 \item{rate2}{as input}
-\item{shape}{as input}
-\item{power_gs}{as input}
+\item{dispersion}{as input}
+\item{power}{as input}
 \item{timing}{as input}
 \item{ratio_H0}{as input}
 \item{ratio_H1}{ratio \code{rate1}/\code{rate2}}
 \item{sig_level}{as input}
 \item{random_ratio}{as input}
+\item{power_fix}{power of fixed design}
+\item{expected_info}{list; expected information under \code{ratio_H0} and \code{ratio_H1}}
+\item{efficacy}{list; contains the elements \code{esf} (type I error spending function), 
+               \code{spend} (type I error spend at each look), and 
+               \code{critical} (critical value for efficacy testing)}
+\item{futility}{list; only part of the output if argument \code{futility} is
+                defined in the input. Contains the elements \code{futility} 
+                (input argument \code{futility}), \code{esf} 
+                (type II error spending function), \code{spend} (type II 
+                error spend at each look), and \code{critical} (critical 
+                value for futility testing)}
+\item{stop_prob}{list; contains the element \code{efficacy} with the probabilities
+                 for stopping for efficacy and, if futility bounds are calculated, 
+                 the element \code{futility} with the probabilities for stopping 
+                 for futility}               
 \item{t_recruit1}{as input}
 \item{t_recruit2}{as input}
 \item{study_period}{as input}
 \item{followup_max}{as input}
-\item{max_info}{ maximum information}
-\item{power_fix}{power of fixed design}
-\item{critical}{critical values for each look}
-\item{reject_prob}{data frame with rejection (i.e. boundary crossing) probabilities}
+\item{max_info}{maximum information}
+\item{calendar}{calendar times of data looks; only calculated when exposure times are not identical}
 }
 \description{
-Design a group sequential trial with negative binomial data
+Design a group sequential trial with negative binomial outcomes
 }
 \examples{
-# Calculate the sample sizes for a given accrual period and study period
-out <- design_gsnb(rate1 = 0.0875, rate2 = 0.125, shape = 5, power_gs = 0.8,
-                   timing = c(0.5, 1), esf = esf_obrien,
+# Calculate the sample sizes for a given accrual period and study period (without futility)
+out <- design_gsnb(rate1 = 0.0875, rate2 = 0.125, dispersion = 5, 
+                   power = 0.8, timing = c(0.5, 1), esf = obrien,
                    ratio_H0 = 1, sig_level = 0.025,
                    study_period = 3.5, accrual_period = 1.25, random_ratio = 1)
 out
 
+# Calculate the sample sizes for a given accrual period and study period with binding futility
+out <- design_gsnb(rate1 = 0.0875, rate2 = 0.125, dispersion = 5, 
+                   power = 0.8, timing = c(0.5, 1), esf = obrien,
+                   ratio_H0 = 1, sig_level = 0.025, study_period = 3.5, 
+                   accrual_period = 1.25, random_ratio = 1, futility = "binding", 
+                   esf_futility = obrien)
+out
+
+
 # Calculate study period for given recruitment times
 expose <- seq(0, 1.25, length.out = 1042)
-out <- design_gsnb(rate1 = 0.0875, rate2 = 0.125, shape = 5, power_gs = 0.8,
-                   timing = c(0.5, 1), esf = esf_obrien,
-                   ratio_H0 = 1, sig_level = 0.025,
-                   t_recruit1 = expose, t_recruit2 = expose, random_ratio = 1)
+out <- design_gsnb(rate1 = 0.0875, rate2 = 0.125, dispersion = 5, 
+                   power = 0.8, timing = c(0.5, 1), esf = obrien,
+                   ratio_H0 = 1, sig_level = 0.025, t_recruit1 = expose, 
+                   t_recruit2 = expose, random_ratio = 1)
 out
 
 # Calculate sample size for a fixed exposure time
-out <- design_gsnb(rate1 = 0.0875, rate2 = 0.125, shape = 5, power_gs = 0.8,
-                   timing = c(0.5, 1), esf = esf_obrien,
+out <- design_gsnb(rate1 = 0.0875, rate2 = 0.125, dispersion = 5, 
+                   power = 0.8, timing = c(0.5, 1), esf = obrien,
                    ratio_H0 = 1, sig_level = 0.025,
                    followup_max = 0.5, random_ratio = 1)
 }

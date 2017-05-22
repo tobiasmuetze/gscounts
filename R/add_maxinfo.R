@@ -3,7 +3,6 @@
 #' @description Add maximum information and critical vlaues to the object gsnb
 #' @keywords internal
 #' @import stats
-#' @export
 add_maxinfo <- function(x) {
   
   # Calculation of max information and critical values is split into three parts: 

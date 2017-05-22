@@ -7,6 +7,6 @@
 add_maxinfo(x)
 }
 \description{
-Add maximum information to the object gsnb
+Add maximum information and critical vlaues to the object gsnb
 }
 \keyword{internal}

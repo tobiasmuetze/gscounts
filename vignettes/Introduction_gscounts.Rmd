@@ -1,30 +1,46 @@
 ---
-title: "<center>An introduction to planning group sequential designs for the negative binomial distribution using gscounts</center>"
+title: "<center>Planning and analyzing group sequential designs for negative binomial outcomes using gscounts</center>"
 author: "<center>Tobias Mütze</center>"
 date: "<center>`r Sys.Date()`</center>"
-output: rmarkdown::html_vignette
+output:
+  rmarkdown::html_document:
+    toc: true
+    number_sections: true
+    theme: cosmo
+    toc_float: true
+# output:
+#   rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Vignette Title}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
+  The package `gscounts` provides a collection of functions for planning and analyzing group 
+  sequential designs and fixed sample designs with negative binomial outcomes, 
+  which includes both recurrent events as well as count data. 
+  In particular, the package provides tools to determine
+  
+  - power and sample size of group sequential designs with various 
+  structures of follow-up times and accrual times,
+  - critical values for group sequential testing.
+  
+  The functions provided by the R package `gscounts` include the functionality for 
+  planning group sequential designs which only stop for efficacy as well as the 
+  functionality for planning group sequential designs which also stop for binding or
+  non-binding futility.
+  
+  
 ---
-  
-  The package `gscounts` provides a collection of functions for planning group sequential designs for the negative binomial distribution. In particular the package provides tools to determine
-  
-  - power and sample size for various types of accrual and follow-up times
-  - critical values for group sequential testing
-  
-  
-Until now, the focus is on group sequential designs for a one-sided hypothesis. The functions focus on stopping for efficacy, stopping for futility has not been implemented yet.
 
----
+# Statistical model
 
-## Statistical model
-
-In a group sequential design the data is not just analyzed once at the end of the study but also while the trial is still ongoing. 
-We define $K$ as the total number of looks into the data.
+In a group sequential design the hypothesis of interest is tested several times 
+during the course of the clinical trial. At each data look, that is what the 
+interim analyses are referred to, the decision whether to stop for efficacy or futility is made.
+In the followig, we briefly outline the statistical model. For more details, the reader is 
+referred to the manuscript by Mütze *et al.* (2017).
+We define $K$ as the total number of data looks.
 We model the number of events of patient $j=1,\ldots, n_{i}$ in treatment group $i=1,2$ at look $k=1,\ldots, K$ as a homogeneous Poisson point process with rate $\lambda_{ij}$. 
 Let $t_{ijk}$ be the exposure time of patient $j$ in treatment group $i$ at look $k$.
 After an exposure time of $t_{ijk}$, the number of events $Y_{ijk}$ of patient $j$ in treatment group $i$ at look $k$ given the rate $\lambda_{ij}$ is Poisson distributed with rate $t_{ijk}\lambda_{ij}$, that is 
@@ -32,87 +48,284 @@ After an exposure time of $t_{ijk}$, the number of events $Y_{ijk}$ of patient $
 Y_{ijk}|\lambda_{ij} \sim \operatorname{Pois}(t_{ijk} \lambda_{ij}).
 \end{align*}
 In other words, the event rate $\lambda_{ij}$ is subject specific.
-The between patient heterogeneity in the event rates is modeled by assuming the rates $\lambda_{ij}$ are gamma distributed with shape $\alpha=1/\phi$ and rate $\beta=1/(\phi \mu_i)$, i.e.
+The between patient heterogeneity in the event rates is modeled by assuming that the rates $\lambda_{ij}$ are Gamma distributed with shape parameter $\alpha=1/\phi$ and rate parameter $\beta=1/(\phi \mu_i)$, i.e.
 \begin{align*}
 \lambda_{ij} \sim \Gamma\left(\frac{1}{\phi}, \frac{1}{\phi \mu_i}\right).
 \end{align*}
-Then, the random variable $Y_{ijk}$ is marginally negative binomial distributed with rate $t_{ijk}\mu_i$ and shape parameter $\phi$, i.e. 
+Then, the random variable $Y_{ijk}$ is marginally negative binomially distributed with rate $t_{ijk}\mu_i$ and dispersion parameter $\phi$, i.e. 
 \begin{align*}
 Y_{ijk} \sim \operatorname{NB}\left(t_{ijk}\mu_i, \phi\right).
 \end{align*}
 The probability mass function of $Y_{ijk}$ is given by
 \begin{align*}
-\mathbb{P}\left(Y_{ijk}=y\right)=\frac{\Gamma(y + 1/\phi)}{\Gamma(1/\phi)y!}\left(\frac{1}{1+\phi t_{ijk} \mu_i}\right)^{1/\phi} \left(\frac{\phi t_{ijk}\mu_i}{1 + \phi t_{ijk}\mu_i }\right)^{y},\qquad y=0,1,2,\ldots.
+\mathbb{P}\left(Y_{ijk}=y\right)=\frac{\Gamma(y + 1/\phi)}{\Gamma(1/\phi)y!}\left(\frac{1}{1+\phi t_{ijk} \mu_i}\right)^{1/\phi} \left(\frac{\phi t_{ijk}\mu_i}{1 + \phi t_{ijk}\mu_i }\right)^{y},\qquad y\in \mathcal{N}_{0}
 \end{align*}
 The expected value and the variance of the random variable $Y_{ij}$ are given by
 \begin{align*}
 \mathbb{E}\left[Y_{ijk}\right] &= t_{ijk} \mu_i, \\
 \operatorname{Var}\left[Y_{ijk}\right] &= t_{ijk} \mu_i (1 + \phi t_{ijk} \mu_i).
 \end{align*}
-Moreover, as the shape parameter approaches zero, the negative binomial distribution converges to a Poisson distribution which also means that the overdispersion increases in $\phi$.
+Moreover, as the dispersion parameter approaches zero, the negative binomial distribution converges to a Poisson distribution which also means that the overdispersion increases in $\phi$.
 In this manuscript we consider smaller values of $\mu_i$ to be better.
 The statistical hypothesis testing problem of interest is 
 \begin{align*}
 H_0: \frac{\mu_1}{\mu_2}\geq \delta \quad \text{vs.} \quad H_1: \frac{\mu_1}{\mu_2} < \delta.
 \end{align*}
-For $\delta\in (1,\infty)$ non-inferiority of treatment 1 compared to treatment 2 is tested and for $\delta \in (0,1]$ superiority of treatment 1 compared to treatment 2 is tested.
-We denote the rate ratio as $\theta=\mu_1/\mu_2$ and the rate ratio under the alternative is given by $\theta^{*}$. 
-Let the log-rate be $\beta_{i} = \log(\mu_i)$. 
-We focus on group sequential designs which allow stopping for efficacy and but not stopping for futility. 
-That means at looks $k=1,\ldots, K-1$ the trial is stopped for efficacy if the null hypothesis $H_0$ can be rejected. 
-If the null hypothesis $H_0$ cannot be rejected at stop $k=1,\ldots, K-1$, the study is continued. 
-However, the theoretical considerations made in this manuscript can be easily adapted to group sequential trials which allow stopping for both efficacy and futility.
+Non-inferiority of treatment 1 compared to treatment 2 is tested for $\delta\in (1,\infty)$.
+Superiority of treatment 1 compared to treatment 2 is tested for for $\delta \in (0,1]$.
+We denote the alternative is given by $\theta^{*}$. 
+The calculation of the efficacy and (non-)binding futility boundaries are performed 
+under the hypothesis $H_0: \frac{\mu_1}{\mu_2}= \delta$ and under the alternative $H_1: \frac{\mu_1}{\mu_2} = \theta^{*}$
 
-## Planning group sequential designs with negative binomial data
+# Planning group sequential designs with negative binomial outcomes
 
-In the following the functions of the R package gscounts for planning group sequential designs with negative binomial data are explained. First of all, the R package is loaded.
+The functionality of the R package `gscounts` includes the planning of group sequential designs for both recurrent events modeled by a negative binomial distribution and count data modeled by a negative binomial distribution.
+In the first part of this section we explain how to plan group sequential designs for recurrent events modeled by a negative binomial distribution. 
+Planning group sequential designs with negative binomial count data is discussed in the second part. 
+
+First of all, however, the R package must be loaded.
 
 ```{r load R package, echo=TRUE}
 library(gscounts)
 ```
-### Sample size calculation for unequal exposure times with uniform recruitment
-The first case study focus on determining the sample size for a group sequential design where we assume a rate ratio in the alternative of $\mu_1 / \mu_2 = 0.0875/0.125=0.7$ to be tested with a margin $\delta=1$. The shape parameter is chosen to be $\phi = 0.8$. The target power for the test in the group sequential design is $1-\beta=0.8$, the interim analysis is performed at an information time of $50\%$, and the O'Brien-Fleming-type error spending function is considered to allocated the significance level $\alpha=0.025$. 
-Furthermore, it is assumed that patients are entering the study uniformly over a period of 1.25 years and that the study ends 2.75 years after the last patient entered, i.e. after 4 year in total.
-The respective sample size can then be calculated using the R function `design_gsnb`.
+
+## Negative binomial recurrent events
+
+### Sample size for unequal exposure times with uniform recruitment
+The first case study focus on determining the sample size for a group sequential 
+design where we assume a rate ratio in the alternative of $\mu_1 / \mu_2 = 0.0875/0.125=0.7$ 
+to be tested with the margin $\delta=1$. The dispersion parameter is chosen to be $\phi = 0.8$. 
+The target power for the test in the group sequential design is $1-\beta=0.8$, 
+the data looks are performed at information times of $50\%$ and $70\%$ of the 
+maximum information $\mathcal{I}_{max}$, and the O'Brien-Fleming-type error 
+spending function is considered to allocated the significance level $\alpha=0.025$. 
+Furthermore, it is assumed that patients are entering the study uniformly over a 
+period of 1.25 years and that the study ends 2.75 years after the last 
+patient entered, i.e. after four years in total. The respective sample size 
+can then be calculated using the R function `design_gsnb`.
 
 ```{r, echo=TRUE}
-out <- design_gsnb(rate1 = 0.0875, rate2 = 0.125, shape = 5, power_gs = 0.8,
-                   timing = c(0.5, 1), esf = esf_obrien,
-                   ratio_H0 = 1, sig_level = 0.025,
-                   study_period = 4, accrual_period = 1.25, random_ratio = 1)
+out <- design_gsnb(rate1 = 0.0875, rate2 = 0.125, dispersion = 5, 
+                   ratio_H0 = 1, power = 0.8, sig_level = 0.025, 
+                   timing = c(0.4, 0.7, 1), esf = obrien, study_period = 4, 
+                   accrual_period = 1.25, random_ratio = 1)
 out
-
 ```
 
-The R function `design_gsnb` returns an object of class *GSNBdesign* which contains the relevant design information. To assess the single components and especially the ones which are not shown in the comprehensive output above such as the assumed study entry times and the critical values, the notation `out$` followed by one following names is used.
+The R function `design_gsnb` returns an object of class *gsnb* which contains the relevant design information. To assess the single components and especially the ones which are not shown in the comprehensive output above, for instance the assumed study entry times, the notation `out$` followed by one following names is used.
+
 ```{r, echo=FALSE}
-names(out)
+str(out)
 ```
 
-### Sample size calculation for equal exposure times
+By default, no futility boundaries are calculated, however, the function `design_gsnb` allows calculating both binding and non-binding futility boundaries. 
+To calculate futility boundaries, the type of futility, i.e. binding or non-binding, has to be specified using the `futility` argument.
+The futility spending function is set through the argument `esf_futility`. 
+Next, a group sequential design with binding futility boundaries is planned. 
+The O'Brien-Fleming-type error spending function is considered for the futility spending.
 
-In some cases patients are only followed for a prespecified time period which is identical for all patients. In this case the syntax for determing the sample size is slightly different. 
-For a Pocock-type error spending function and a planned follow-up time of 0.5 years for every patient the sample size of the group sequential design is determined by the following R code.
+```{r, echo=TRUE}
+out2 <- design_gsnb(rate1 = 0.0875, rate2 = 0.125, dispersion = 5, 
+                    ratio_H0 = 1, power = 0.8, sig_level = 0.025, 
+                    timing = c(0.4, 0.7, 1), esf = obrien, study_period = 4, 
+                    accrual_period = 1.25, random_ratio = 1, 
+                    futility = "binding", esf_futility = obrien)
+out2
 
-```{r}
-out <- design_gsnb(rate1 = 4.2, rate2 = 8.4, shape = 3, power_gs = 0.8,
-                   timing = c(0.5, 1), esf = esf_pocock,
-                   ratio_H0 = 1, sig_level = 0.025,
-                   followup_max = 0.5, random_ratio = 1)
-out
 ```
 
-### Calculation of study duration given the study entry times
 
-In the following we assume that the patients' study entry times are given and calculate the required study duration for a precispied power.
+### Sample size for equal exposure times
+
+In some cases patients are only followed for a prespecified time period which is 
+identical for all patients. In this case the syntax for determing the 
+sample size is slightly different. We assume a Pocock-type error spending function 
+and a planned follow-up time of 0.5 years for every patient.
+The data look is performed at $50\%$ of the maximum information time $\mathcal{I}_{max}$.
+Futility stopping is not considered in this example.
+The next chunk shows the code for calculating the sample size 
+of the group sequential design in the case of equal follow-up times.
+
+```{r, results='hold'}
+out3 <- design_gsnb(rate1 = 4.2, rate2 = 8.4, dispersion = 3, ratio_H0 = 1, 
+                   power = 0.8, sig_level = 0.025, timing = c(0.5, 1), 
+                   esf = pocock, followup_max = 0.5, random_ratio = 1)
+out3$n
+out3$n1
+out3$n2
+```
+
+The sample size calculated in output `out3` is independent of the 
+time the various subjects enter the study. However, the time the subjects 
+enter the study affects the calendar time of the data looks.
+
+The sample size ratio $n_1 / n_2$ is by default set to be one but can 
+be changed in the input through the argument `random_ratio`. 
+The next chunk shows an example for which the sample size 
+in group 1 is twice the sample size of group 2, i.e. $n_1 / n_2 = 2$,
+and a nonbinding futility boundary is included based on the O'Brien-Fleming-type 
+error spending function.
+
+
+```{r, results='hold'}
+out4 <- design_gsnb(rate1 = 4.2, rate2 = 8.4, dispersion = 3, ratio_H0 = 1, 
+                   power = 0.8, sig_level = 0.025, timing = c(0.5, 1), 
+                   esf = pocock, followup_max = 0.5, random_ratio = 2,
+                   futility = "nonbinding", esf_futility = obrien)
+out4$n
+out4$n1
+out4$n2
+```
+
+
+### Study duration given the study entry times
+
+In the following we assume that the patients' study entry times are given and 
+we calculate the study duration required to obtain a prespecified power.
 We assume that the study entry times are identical between the groups.
 
 ```{r}
-expose <- seq(0, 1.25, length.out = 1042)
-out <- design_gsnb(rate1 = 0.0875, rate2 = 0.125, shape = 5, power_gs = 0.8,
-                   timing = c(0.5, 1), esf = esf_obrien,
-                   ratio_H0 = 1, sig_level = 0.025,
-                   t_recruit1 = expose, t_recruit2 = expose, random_ratio = 1)
-out
+recruit <- seq(0, 1.25, length.out = 1042)
+out5 <- design_gsnb(rate1 = 0.0875, rate2 = 0.125, dispersion = 5, 
+                   power = 0.8, timing = c(0.5, 1), esf = obrien,
+                   ratio_H0 = 1, sig_level = 0.025, 
+                   t_recruit1 = recruit, t_recruit2 = recruit)
+out5$study_period
 ```
 
+Under the assumption of recruitment times as defined in the variable `recruit`, the study period required to obtain a group sequential design with a power of $80\%$ is  `r round(out5$study_period, 3)`. More information on the design are contained in the object `out5`.
+
+## Negative binomial count data
+
+Planning a group sequential design for negative binomial count data with the function `design_gsnb` is very similar to the case of planning a group sequential design for negative binomial recurrent events with equal exposure time. 
+In detail, for the negative binomial count data, no exposure times exist and the recruitment times, the study period, and the accrual period are not relevant for planning purposes. 
+Thus, the input argument defining the maximum follow-up time is set to one, that is `followup_max = 1` and the input arguments `t_recruit1`, `t_recruit2`,  `study_period`, and `accrual_period` are set to their default value `NULL`.
+The next chunk shows the R code for calculating the sample size of a group sequential design with negative binomial count data. 
+
+```{r, results='hold'}
+out6 <- design_gsnb(rate1 = 4.2, rate2 = 8.4, dispersion = 3, ratio_H0 = 1, 
+                   power = 0.8, sig_level = 0.025, timing = c(0.5, 1), 
+                   esf = obrien, followup_max = 1, random_ratio = 1)
+out6$n1
+out6$n2
+```
+
+
+# Analyzing group sequential design with negative binomial outcomes
+
+In this section we illustrate how to analyze a group sequential design with negative binomial outcomes. 
+For illustration purposes, we assume that the data comes from the clinical trial example planned in Section 2.1.1.
+In other words, we have a group sequential design with a maximum of three data looks, no futility stopping, 
+a planned study period of four years, an accrual period of 1.25 years, and a planned accrual of 990 patients per group.
+It is assumed that the patients enter the study uniformly throughout the accrual period.
+The package includes the example data set `hospitalizations` which was generated using R.
+The data set contains the four columns `treatment`, `pat`, `t_recruit`, and `eventtime`.
+The column `pat` contains the patient number which is unique within the treatment indication 
+listed in the column `treatment`.
+The time a patient enters the study is listed in column `t_recruit`. 
+In the column `eventtime`, the time of an event (here the events are hospitalizations) 
+of a patient is listed. If a patient has no event, the column contains `NA`. 
+If a patient has multiple events, the event times are listed over multiple rows.
+The next chunk shows the first ten columns of the data set.
+
+```{r hospitalizations}
+head(hospitalizations, n = 10)
+```
+
+When a clinical trial with group sequential design is planned, the decision on the information time of the data look has to be made.
+This decision is essential in that it affects the required maximum information.
+In our example clinical trial, the data looks are planned to be performed at information times `r out$timing`.
+There are various potential ways in how to proceed in practice: the information level of the clinical trial could 
+be monitored and the data looks are performed when the respective information levels are achieved, 
+or alternatively, the data looks could be performed at the calendar times which correspond to the 
+planned information times of the data looks under the alternative.
+When the effect and the nuisance parameters are specified correctly in the planning phase, the calendar times
+at which the respective information levels are achieved and the calendar times determined during the planning
+phase will be similar.
+The function `design_gsnb` calculates the calendar times under the specified alternative 
+which are  `r round(out$calendar, 3)` years for the example clinical trial.
+It is important to emphasize that the critical values have to be recalculated when the information
+times of the data looks are changed, otherwise the type I error rate will be affected. 
+Moreover, a change of the information time of the data looks will affect the power.
+In the following, we focus on the case where the information level is monitored.
+One way of monitoring the information level is to calculate the estimates $\hat{\lambda}_1$, and
+$\hat{\lambda}_2$, and $\hat{\phi}$ of the rates and the dispersion shape parameter 
+after every new event. Then, the information level after that event is 
+calcualted using the function `get_info_gsnb()`.
+The next chunk shows the code for monitoring the information level after the event at 
+calendar time `t = 1.297` years.
+This is also the calendar time of the first data look since the information level 
+is $0.4\mathcal{I}_{max}=`r round(0.4*out$max_info, 2)`$.
+
+```{r info-monitoring, results='hide', message=FALSE}
+library(dplyr)
+# Filter data to obtain all the events which happened prior to t = 1.2906
+t <- 1.2972
+rawdata_interim <- dplyr::filter(hospitalizations, t_recruit <= t, 
+                       (is.na(eventtime) | eventtime <= t))
+# Calculate the number of events of every patient until t
+events_interim <- rawdata_interim %>% 
+  group_by(treatment, pat, t_recruit) %>% 
+  summarise(count = sum(eventtime <= t, na.rm = TRUE)) 
+# Exposure time = time of patient with study
+events_interim$t_expose <- t - events_interim$t_recruit
+# Negative binomial regression
+glm_out <- MASS::glm.nb(formula = count ~ treatment + offset(log(t_expose)) - 1, 
+                        data = events_interim)
+rates <- exp(glm_out$coefficients)
+followup1 <- dplyr::filter(events_interim, treatment == 'experiment')$t_expose
+followup2 <- dplyr::filter(events_interim, treatment == 'control')$t_expose
+# Information level at calendar time t
+info_interim <- get_info_gsnb(rate1 = rates["treatmentexperiment"],
+                              rate2 = rates["treatmentcontrol"],
+                              dispersion = 1/glm_out$theta, 
+                              followup1 = followup1, 
+                              followup2 = followup2)
+
+```
+
+The information level at calendar time $t=`r t`$ is given by $\mathcal{I}_{t}=`r round(info_interim, 3)`$. 
+Next, we explain how to perform the interim analysis at the calendar time $t=`r t`$. The respective data are 
+given by the list `event_interim`. 
+To test whether the clinical trial can be stopped early for efficacy, a negative binomial regression is performed.
+The results are as follows.
+```{r}
+glm_interim1 <- MASS::glm.nb(formula = count ~ treatment + offset(log(t_expose)), 
+                        data = events_interim)
+summary(glm_interim1)$coefficients
+```
+
+The test statistic for the test of efficacy (and futility if stopping for futility is part of the design) 
+is the negative $z$-value of the coefficient `treatmentcontrol`, 
+i.e. $T_1 = `r -round(summary(glm_interim1)$coefficients["treatmentcontrol", "z value"], 3)`$.
+However, the critical value for the first data look as calculated during the planning phase of the study and stored in the object
+`out` under `out$efficacy$critical`, is $c_1 = `r round(out$efficacy$critical[1],3)`$. 
+Thus, since the test statistic is not smaller than the critical value, the clinical 
+trial is not stopped for efficacy.
+
+# Planning and analyzing a fixed sample design with negative binomial outcomes
+
+The R package `gscount`, through the function `design_nb`, also implements the functionality for planning a fixed sample design with negative binomial outcomes.
+The input arguments of the function `design_nb` are mostly identical to the input arguments of the function `design_gsnb`, which we discussed in Section 2. 
+In the following we outline the R code for planning a fixed sample design with the same parameters are the first example.
+
+```{r fixed_design, echo=TRUE}
+out_fix <- design_nb(rate1 = 0.0875, rate2 = 0.125, dispersion = 5, 
+                 ratio_H0 = 1, power = 0.8, sig_level = 0.025, 
+                 study_period = 4, accrual_period = 1.25, random_ratio = 1)
+out_fix
+```
+
+The output of the function `design_nb` is an object of class `nb`. 
+The printed object contains the distribution parameters, the listed hypothesis testing parameters, 
+and the design parameters, i.e. sample size accrual periord, and study duration. 
+Not every parameter in the output object is printed, though. The assumed recruitment times of the 
+patients, are not printed. The next chunk shows the internal structure of an object of class `nb`.
+
+```{r nb_stucture}
+str(out_fix)
+```
+
+
+# References
+* T. Mütze, E. Glimm, H. Schmidli, and T. Friede. *Planning and analysis of group sequential designs for negative binomial outcomes.* Submitted (2017).

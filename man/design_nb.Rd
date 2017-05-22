@@ -4,7 +4,7 @@
 \alias{design_nb}
 \title{Clinical trials with negative binomial outcomes}
 \usage{
-design_nb(rate1, rate2, shape, power, ratio_H0 = 1, sig_level,
+design_nb(rate1, rate2, dispersion, power, ratio_H0 = 1, sig_level,
   random_ratio = 1, t_recruit1 = NULL, t_recruit2 = NULL,
   study_period = NULL, accrual_period = NULL, followup_max = NULL)
 }
@@ -13,7 +13,7 @@ design_nb(rate1, rate2, shape, power, ratio_H0 = 1, sig_level,
 
 \item{rate2}{numeric; assumed rate of treatment group 2 in the alternative}
 
-\item{shape}{numeric; shape parameter}
+\item{dispersion}{numeric; dispersion (shape) parameter of negative binomial distribution}
 
 \item{power}{numeric; target power}
 
@@ -38,7 +38,7 @@ under the null hypothesis, i.e. the non-inferiority or superiority margin}
 A list containing the following components:
 \item{rate1}{as input}
 \item{rate2}{as input}
-\item{shape}{as input}
+\item{dispersion}{as input}
 \item{power}{as input}
 \item{ratio_H0}{as input}
 \item{ratio_H1}{ratio \code{rate1}/\code{rate2}}
@@ -55,13 +55,13 @@ Design a clinical trial with negative binomial outcomes
 }
 \examples{
 # Calculate sample size for given accrual period and study duration assuming uniformal accrual
-out <- design_nb(rate1 = 0.0875, rate2 = 0.125, shape = 5, power = 0.8,
+out <- design_nb(rate1 = 0.0875, rate2 = 0.125, dispersion = 5, power = 0.8,
                  ratio_H0 = 1, sig_level = 0.025,
                  study_period = 4, accrual_period = 1, random_ratio = 2)
 out
 
 # Calculate sample size for a fixed exposure time of 0.5 years
-out <- design_nb(rate1 = 4.2, rate2 = 8.4, shape = 3, power = 0.8,
+out <- design_nb(rate1 = 4.2, rate2 = 8.4, dispersion = 3, power = 0.8,
                  ratio_H0 = 1, sig_level = 0.025,
                  followup_max = 0.5, random_ratio = 2)
 out
@@ -69,7 +69,7 @@ out
 # Calculate study period for given recruitment time
 t_recruit1 <- seq(0, 1.25, length.out = 1200)
 t_recruit2 <- seq(0, 1.25, length.out = 800)
-out <- design_nb(rate1 = 0.0875, rate2 = 0.125, shape = 5, power = 0.8,
+out <- design_nb(rate1 = 0.0875, rate2 = 0.125, dispersion = 5, power = 0.8,
                  ratio_H0 = 1, sig_level = 0.025,
                  t_recruit1 = t_recruit1, t_recruit2 = t_recruit2)
 }

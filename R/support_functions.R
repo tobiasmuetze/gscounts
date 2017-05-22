@@ -25,7 +25,7 @@ samplesize_from_periods <- function(max_info, accrual_period, study_period, rand
     n <- n1 + n2
     t_recruit1 <- seq(0, accrual_period, length.out = n1)
     t_recruit2 <- seq(0, accrual_period, length.out = n2)
-    get_info_gsnb(rate1 = rate1, rate2 = rate2, shape = shape,
+    get_info_gsnb(rate1 = rate1, rate2 = rate2, dispersion = shape,
                   followup1 = study_period - t_recruit1,
                   followup2 = study_period - t_recruit2)
   })
@@ -55,7 +55,7 @@ studyperiod_from_recruit <- function(max_info, random_ratio, rate1,
   body_recruit <- quote({
     isRec1 <- (t_recruit1 <= study_period)
     isRec2 <- (t_recruit2 <= study_period)
-    get_info_gsnb(rate1 = rate1, rate2 = rate2, shape = shape,
+    get_info_gsnb(rate1 = rate1, rate2 = rate2, dispersion = shape,
                   followup1 = study_period - t_recruit1[isRec1],
                   followup2 = study_period - t_recruit2[isRec2])
   })
@@ -87,7 +87,7 @@ samplesize_from_followup <- function(max_info, random_ratio, rate1,
     n1 <- ceiling(n / (1 + 1/random_ratio))
     n2 <- ceiling(n / (1 + random_ratio))
     n <- n1 + n2
-    get_info_gsnb(rate1 = rate1, rate2 = rate2, shape = shape,
+    get_info_gsnb(rate1 = rate1, rate2 = rate2, dispersion = shape,
                   followup1 = rep(followup_max, times = n1),
                   followup2 = rep(followup_max, times = n2))
   })

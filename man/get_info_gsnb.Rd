@@ -4,14 +4,14 @@
 \alias{get_info_gsnb}
 \title{Information level for log rate ratio}
 \usage{
-get_info_gsnb(rate1, rate2, shape, followup1, followup2)
+get_info_gsnb(rate1, rate2, dispersion, followup1, followup2)
 }
 \arguments{
 \item{rate1}{numeric; rate in treatment group 1}
 
 \item{rate2}{numeric; rate in treatment group 2}
 
-\item{shape}{numeric; shape parameter}
+\item{dispersion}{numeric; dispersion (shape) parameter of negative binomial distribution}
 
 \item{followup1}{numeric vector; individual follow-up times in treatment group 1}
 

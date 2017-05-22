@@ -13,7 +13,9 @@ Imports: stats, MASS, ggplot2, mvtnorm, devtools, Rcpp(>= 0.12.9)
 Suggests:
     testthat,
     knitr,
-    rmarkdown
+    rmarkdown,
+    dplyr,
+    MASS
 License: GPL (>= 2)
 NeedsCompilation: yes
 URL: https://github.com/tobiasmuetze/gsnbin

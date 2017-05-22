@@ -1,25 +1,56 @@
-rm(list = "x")
-x <- list(rate1 = 0.0875, rate2 = 0.125, 
-          dispersion = 5, ratio_H0 = 1,
-          power = 0.8, sig_level = 0.05,
-          timing = c(0.2, 0.5, 1), esf = esf_obrien,
-          esf_futility = esf_obrien, 
-          followup_max = 0.5, random_ratio = 1)
-x$efficacy$esf <- esf_obrien
-x$efficacy$spend <- c(1.172645e-05, diff(esf_obrien(t = x$timing, sig_level = 0.05)))
-x$futility$spend <- c(0.004161719, diff(esf_obrien(t = x$timing, sig_level = 0.2)))
-x$futility$type <- "binding"
-x <- add_maxinfo(x)
-x$efficacy$critical
-x$futility$critical
-
 library(gsDesign)
+rm(list = ls())
+
+x <- design_gsnb(rate1 = 0.0875, rate2 = 0.125, 
+                 dispersion = 5, ratio_H0 = 1,
+                 power = 0.8, sig_level = 0.025,
+                 timing = c(0.5, 1), esf = obrien, 
+                 study_period = 3.5, accrual_period = 1.25)
+x
+names(x)
+# One-sided test without futility boundaries
+y <- gsDesign(k = 2, timing = c(0.5, 1), test.type = 1, sfu = sfLDOF, sfl = sfLDOF, delta = -log(0.7), alpha = 0.025, beta = 0.2)
+y$lower$spend
+y$upper$bound
+y
+
+################################################################################################
+
+rm(list = c("x", "y"))
+x <- design_gsnb(rate1 = 0.0875, rate2 = 0.125, 
+                 dispersion = 5, ratio_H0 = 1,
+                 power = 0.8, sig_level = 0.05,
+                 timing = c(0.2, 0.5, 1), esf = obrien, 
+                 study_period = 3.5, accrual_period = 1.25,
+                 esf_futility = obrien,
+                 futility = "binding")
+x
+x$expected_info
 # Two-sided test with binding futility boundaries
 y <- gsDesign(k=3, timing = c(0.2, 0.5, 1), test.type=3, sfu = sfLDOF, sfl = sfLDOF, delta = -log(0.7), alpha = 0.05, beta = 0.2)
 y$lower$bound
 y$upper$bound
 y
 plot(y)
+
+################################################################################################
+
+rm(list = c("x", "y"))
+x <- design_gsnb(rate1 = 0.0875, rate2 = 0.125, 
+                 dispersion = 5, ratio_H0 = 1,
+                 power = 0.8, sig_level = 0.05,
+                 timing = c(0.2, 0.5, 1), esf = obrien, 
+                 study_period = 3.5, accrual_period = 1.25,
+                 esf_futility = obrien,
+                 futility = "nonbinding")
+x
+# Two-sided test with non-binding futility boundaries
+y <- gsDesign(k=3, timing = c(0.2, 0.5, 1), test.type=4, sfu = sfLDOF, sfl = sfLDOF, delta = -log(0.7), alpha = 0.05, beta = 0.2)
+y$lower$bound
+y$upper$bound
+y
+
+
 
 
 # Two-sided test with non-binding futility boundaries
