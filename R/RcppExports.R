@@ -2,10 +2,10 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 cpp_calc_critical <- function(r, lower, upper, error_spend, information, theta, side) {
-    .Call('gscounts_cpp_calc_critical', PACKAGE = 'gscounts', r, lower, upper, error_spend, information, theta, side)
+    .Call('_gscounts_cpp_calc_critical', PACKAGE = 'gscounts', r, lower, upper, error_spend, information, theta, side)
 }
 
 cpp_pmultinorm <- function(r, lower, upper, information, theta) {
-    .Call('gscounts_cpp_pmultinorm', PACKAGE = 'gscounts', r, lower, upper, information, theta)
+    .Call('_gscounts_cpp_pmultinorm', PACKAGE = 'gscounts', r, lower, upper, information, theta)
 }
 

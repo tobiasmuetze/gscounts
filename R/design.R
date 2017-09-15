@@ -28,16 +28,16 @@ add_stopping_prob <- function(x) {
     fut_critical <- x$futility$critical
   ## Probs for stopping for efficacy
   for(i in 2:k) {
-    eff_stop[1, i] <- .Call('gscounts_cpp_pmultinorm', PACKAGE = 'gscounts', 
-                              r = 23, lower = c(x$efficacy$critical[1:(i-1)], -Inf), 
-                              upper = c(fut_critical[1:(i-1)], x$efficacy$critical[i]), 
-                              information = x$max_info * x$timing[1:i], 
-                              theta = log(x$ratio_H0))
-    eff_stop[2, i] <- .Call('gscounts_cpp_pmultinorm', PACKAGE = 'gscounts', 
-                              r = 23, lower = c(x$efficacy$critical[1:(i-1)], -Inf), 
-                              upper = c(fut_critical[1:(i-1)], x$efficacy$critical[i]), 
-                              information = x$max_info * x$timing[1:i], 
-                              theta = log_effect)
+    eff_stop[1, i] <- cpp_pmultinorm(r = 23, 
+                                     lower = c(x$efficacy$critical[1:(i-1)], -Inf), 
+                                     upper = c(fut_critical[1:(i-1)], x$efficacy$critical[i]), 
+                                     information = x$max_info * x$timing[1:i], 
+                                     theta = log(x$ratio_H0))
+    eff_stop[2, i] <- cpp_pmultinorm(r = 23, 
+                                     lower = c(x$efficacy$critical[1:(i-1)], -Inf), 
+                                     upper = c(fut_critical[1:(i-1)], x$efficacy$critical[i]), 
+                                     information = x$max_info * x$timing[1:i], 
+                                     theta = log_effect)
   }
   ## Initialize results as part of x
   x$stop_prob$efficacy <- as.data.frame(cbind(c(x$ratio_H0, ratio_H1), eff_stop, 
@@ -52,16 +52,16 @@ add_stopping_prob <- function(x) {
     fut_stop[2, 1] <- 1 - pnorm(x$futility$critical[1], mean = log_effect * sqrt(x$timing[1] * x$max_info))
     ## Probs for stopping for efficacy
     for(i in 2:k) {
-      fut_stop[1, i] <- .Call('gscounts_cpp_pmultinorm', PACKAGE = 'gscounts', r = 23, 
-                              lower = c(x$efficacy$critical[1:(i-1)], x$futility$critical[i]), 
-                              upper = c(x$futility$critical[1:(i-1)], Inf), 
-                              information = x$max_info * x$timing[1:i], 
-                              theta = log(x$ratio_H0))
-      fut_stop[2, i] <- .Call('gscounts_cpp_pmultinorm', PACKAGE = 'gscounts', r = 23, 
-                              lower = c(x$efficacy$critical[1:(i-1)], x$futility$critical[i]), 
-                              upper = c(x$futility$critical[1:(i-1)], Inf), 
-                              information = x$max_info * x$timing[1:i], 
-                              theta = log_effect)
+      fut_stop[1, i] <- cpp_pmultinorm(r = 23, 
+                                       lower = c(x$efficacy$critical[1:(i-1)], x$futility$critical[i]), 
+                                       upper = c(x$futility$critical[1:(i-1)], Inf), 
+                                       information = x$max_info * x$timing[1:i], 
+                                       theta = log(x$ratio_H0))
+      fut_stop[2, i] <- cpp_pmultinorm(r = 23, 
+                                       lower = c(x$efficacy$critical[1:(i-1)], x$futility$critical[i]), 
+                                       upper = c(x$futility$critical[1:(i-1)], Inf), 
+                                       information = x$max_info * x$timing[1:i], 
+                                       theta = log_effect)
     }
     ## Initialize results as part of x
     x$stop_prob$futility <- as.data.frame(cbind(c(x$ratio_H0, ratio_H1), fut_stop, 

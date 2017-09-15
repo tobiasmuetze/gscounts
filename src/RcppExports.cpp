@@ -7,7 +7,7 @@ using namespace Rcpp;
 
 // cpp_calc_critical
 double cpp_calc_critical(int r, NumericVector lower, NumericVector upper, double error_spend, NumericVector information, double theta, String side);
-RcppExport SEXP gscounts_cpp_calc_critical(SEXP rSEXP, SEXP lowerSEXP, SEXP upperSEXP, SEXP error_spendSEXP, SEXP informationSEXP, SEXP thetaSEXP, SEXP sideSEXP) {
+RcppExport SEXP _gscounts_cpp_calc_critical(SEXP rSEXP, SEXP lowerSEXP, SEXP upperSEXP, SEXP error_spendSEXP, SEXP informationSEXP, SEXP thetaSEXP, SEXP sideSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -24,7 +24,7 @@ END_RCPP
 }
 // cpp_pmultinorm
 double cpp_pmultinorm(int r, NumericVector lower, NumericVector upper, NumericVector information, double theta);
-RcppExport SEXP gscounts_cpp_pmultinorm(SEXP rSEXP, SEXP lowerSEXP, SEXP upperSEXP, SEXP informationSEXP, SEXP thetaSEXP) {
+RcppExport SEXP _gscounts_cpp_pmultinorm(SEXP rSEXP, SEXP lowerSEXP, SEXP upperSEXP, SEXP informationSEXP, SEXP thetaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -36,4 +36,15 @@ BEGIN_RCPP
     rcpp_result_gen = Rcpp::wrap(cpp_pmultinorm(r, lower, upper, information, theta));
     return rcpp_result_gen;
 END_RCPP
+}
+
+static const R_CallMethodDef CallEntries[] = {
+    {"_gscounts_cpp_calc_critical", (DL_FUNC) &_gscounts_cpp_calc_critical, 7},
+    {"_gscounts_cpp_pmultinorm", (DL_FUNC) &_gscounts_cpp_pmultinorm, 5},
+    {NULL, NULL, 0}
+};
+
+RcppExport void R_init_gscounts(DllInfo *dll) {
+    R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
+    R_useDynamicSymbols(dll, FALSE);
 }
