@@ -1,5 +1,5 @@
 #' @name add_stopping_prob
-#' @title Calcualte stopping probabilities
+#' @title Calculate stopping probabilities
 #' @description Calcualte analyses specific stopping probabilities and
 #' expected information level
 #' @param x Object of class gsnb
@@ -98,7 +98,7 @@ add_stopping_prob <- function(x) {
 #' @param timing numeric vector; 0 < \code{timing[1]} < ... < \code{timing[K]} = 1
 #' with \code{K} the number of analyses, i.e. (K-1) interim analyses and final analysis
 #' @param esf function; error spending function
-#' @param ratio_H0 numeric; postive number denoting the rate ratio rate_1/rate_2
+#' @param ratio_H0 numeric; positive number denoting the rate ratio rate_1/rate_2
 #' under the null hypothesis, i.e. the non-inferiority or superiority margin
 #' @param sig_level numeric; Type I error / significance level
 #' @param random_ratio numeric; randomization ratio n1/n2

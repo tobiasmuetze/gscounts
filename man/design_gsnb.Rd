@@ -16,7 +16,7 @@ design_gsnb(rate1, rate2, dispersion, ratio_H0 = 1, random_ratio = 1, power,
 
 \item{dispersion}{numeric; dispersion (shape) parameter of negative binomial distribution}
 
-\item{ratio_H0}{numeric; postive number denoting the rate ratio rate_1/rate_2
+\item{ratio_H0}{numeric; positive number denoting the rate ratio rate_1/rate_2
 under the null hypothesis, i.e. the non-inferiority or superiority margin}
 
 \item{random_ratio}{numeric; randomization ratio n1/n2}

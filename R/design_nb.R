@@ -5,7 +5,7 @@
 #' @param rate2 numeric; assumed rate of treatment group 2 in the alternative
 #' @param dispersion numeric; dispersion (shape) parameter of negative binomial distribution
 #' @param power numeric; target power
-#' @param ratio_H0 numeric; postive number denoting the rate ratio rate_1/rate_2
+#' @param ratio_H0 numeric; positive number denoting the rate ratio rate_1/rate_2
 #' under the null hypothesis, i.e. the non-inferiority or superiority margin
 #' @param sig_level numeric; Type I error / significance level
 #' @param random_ratio numeric; randomization ratio n1/n2

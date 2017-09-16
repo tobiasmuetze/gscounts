@@ -2,7 +2,7 @@
 % Please edit documentation in R/design.R
 \name{add_stopping_prob}
 \alias{add_stopping_prob}
-\title{Calcualte stopping probabilities}
+\title{Calculate stopping probabilities}
 \usage{
 add_stopping_prob(x)
 }

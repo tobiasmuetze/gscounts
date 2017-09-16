@@ -1,6 +1,6 @@
 #' @name add_maxinfo
 #' @title Maximum information
-#' @description Add maximum information and critical vlaues to the object gsnb
+#' @description Add maximum information and critical values to the object gsnb
 #' @keywords internal
 #' @import stats
 add_maxinfo <- function(x) {
