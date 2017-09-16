@@ -1,7 +1,7 @@
 Package: gscounts
 Type: Package
 Title: Group Sequential Designs with Negative Binomial Outcomes
-Version: 0.0.1-9000
+Version: 0.1-0
 Authors@R: person("Tobias", "Muetze", role=c("aut","cre"),
                     email="tobias.muetze@outlook.com")
 Author: Tobias Muetze [aut, cre]
@@ -14,7 +14,9 @@ Suggests:
     testthat,
     knitr,
     rmarkdown,
-    dplyr
+    dplyr,
+    gsDesign,
+    mvtnorm
 License: GPL (>= 2)
 NeedsCompilation: yes
 URL: https://github.com/tobiasmuetze/gscounts
