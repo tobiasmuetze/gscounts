@@ -4,5 +4,4 @@
 .RData
 .Ruserdata
 inst/doc
-.travis.yml
 .gitignore
