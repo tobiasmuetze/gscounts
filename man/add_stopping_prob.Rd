@@ -2,7 +2,7 @@
 % Please edit documentation in R/design.R
 \name{add_stopping_prob}
 \alias{add_stopping_prob}
-\title{Calcualte stopping probabilities}
+\title{Calculate stopping probabilities}
 \usage{
 add_stopping_prob(x)
 }
@@ -13,7 +13,7 @@ add_stopping_prob(x)
 Object of class gsnb
 }
 \description{
-Calcualte analyses specific stopping probabilities and
+Calculate analyses specific stopping probabilities and
 expected information level
 }
 \keyword{internal}

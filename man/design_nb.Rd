@@ -17,7 +17,7 @@ design_nb(rate1, rate2, dispersion, power, ratio_H0 = 1, sig_level,
 
 \item{power}{numeric; target power}
 
-\item{ratio_H0}{numeric; postive number denoting the rate ratio rate_1/rate_2
+\item{ratio_H0}{numeric; positive number denoting the rate ratio rate_1/rate_2
 under the null hypothesis, i.e. the non-inferiority or superiority margin}
 
 \item{sig_level}{numeric; Type I error / significance level}

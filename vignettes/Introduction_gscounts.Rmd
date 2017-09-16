@@ -1,5 +1,5 @@
 ---
-title: "<center>Planning and analyzing group sequential designs for negative binomial outcomes using gscounts</center>"
+title: "<center>Group sequential designs for negative binomial outcomes using gscounts</center>"
 author: "<center>Tobias Mütze</center>"
 date: "<center>`r Sys.Date()`</center>"
 output:
@@ -11,7 +11,7 @@ output:
 # output:
 #   rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteIndexEntry{Group sequential designs for negative binomial outcomes}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
