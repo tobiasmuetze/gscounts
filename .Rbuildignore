@@ -3,4 +3,3 @@
 nextsteps.md
 .travis.yml
 cran-comments.md
-^cran-comments\.md$
