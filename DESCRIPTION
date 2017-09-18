@@ -1,4 +1,4 @@
- Package: gscounts
+Package: gscounts
 Type: Package
 Title: Group Sequential Designs with Negative Binomial Outcomes
 Version: 0.1-0
@@ -6,7 +6,7 @@ Authors@R: person("Tobias", "Muetze", role=c("aut","cre"),
                     email="tobias.muetze@outlook.com")
 Author: Tobias Muetze [aut, cre]
 Description: Design and analysis of group sequential designs with negative
-    binomial outcomes, as described by T Mütze, E Glimm, H Schmidli, T Friede (2017) <arXiv:1707.04612>.
+    binomial outcomes, as described by T Muetze, E Glimm, H Schmidli, T Friede (2017) <arXiv:1707.04612>.
 Depends:
     R (>= 3.0.0)
 Imports: stats, MASS, ggplot2, devtools, Rcpp(>= 0.12.9)
