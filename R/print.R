@@ -91,6 +91,7 @@ print.nb <- function(x, ...) {
   cat(" Rate ratio under alternative: ", format(x$rate1 / x$rate2, digits = 4), "\n")
   cat(" Significance level: ", format(x$sig_level, digits = 4), "\n")
   cat(" Power fixed design: ", format(x$power, digits = 4), "\n")
+  cat(" Maximum information: ", format(x$max_info, digits = 4), "\n")
   cat("Sample size and study duration\n")
   cat(" Sample size group 1: ", x$n1, "\n")
   cat(" Sample size group 2: ", x$n2, "\n")
