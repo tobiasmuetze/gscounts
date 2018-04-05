@@ -328,4 +328,4 @@ str(out_fix)
 
 
 # References
-* T. Mütze, E. Glimm, H. Schmidli, and T. Friede. [*Group sequential designs for negative binomial outcomes.*](https://arxiv.org/abs/1707.04612) Submitted (2017).
+* T. Mütze, E. Glimm, H. Schmidli, and T. Friede. (2018) [*Group sequential designs for negative binomial outcomes.*](https://arxiv.org/abs/1707.04612) Statistical Methods in Medical Research (in press).

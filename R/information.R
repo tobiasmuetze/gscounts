@@ -8,6 +8,14 @@
 #' @param followup1 numeric vector; individual follow-up times in treatment group 1
 #' @param followup2 numeric vector; individual follow-up times in treatment group 2
 #' @return numeric; information level
+#' @examples 
+#' # Calculates information level for case of 10 subjects per group
+#' # Follow-up times of subjects in each group range from 1 to 3
+#' get_info_gsnb(rate1 = 0.1,
+#'               rate2 = 0.125,
+#'               dispersion = 4, 
+#'               followup1 = seq(1, 3, length.out = 10), 
+#'               followup2 = seq(1, 3, length.out = 10))
 #' @export
 get_info_gsnb <- function(rate1, rate2, dispersion, followup1, followup2) {
 
@@ -32,6 +40,18 @@ get_info_gsnb <- function(rate1, rate2, dispersion, followup1, followup2) {
 #' @param followup2 numeric vector; final individual follow-up times in treatment group 2
 #' @return numeric; vector with calendar time of data looks
 #' @import stats
+#' @examples 
+#' # Calendar time at which 50%, 75%, and 100% of the maximum information is attained
+#' # 100 subjects in each group are recruited uniformly over 1.5 years
+#' # Study ends after two years, i.e. follow-up times vary between 2 and 0.5 years 
+#' get_calendartime_gsnb(rate1 = 0.1, 
+#'                       rate2 = 0.125, 
+#'                       dispersion = 5, 
+#'                       t_recruit1 = seq(0, 1.5, length.out = 100), 
+#'                       t_recruit2 = seq(0, 1.5, length.out = 100),
+#'                       timing = c(0.5, 0.75, 1),
+#'                       followup1 = seq(2, 0.5, length.out = 100),
+#'                       followup2 = seq(2, 0.5, length.out = 100)) 
 #' @export
 get_calendartime_gsnb <- function(rate1, rate2, dispersion, t_recruit1, t_recruit2,
                                 timing, followup1, followup2) {

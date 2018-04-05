@@ -4,6 +4,9 @@
 #' @param sig_level numeric; significance level
 #' @param ... optional arguments
 #' @return numeric
+#' @examples 
+#' # Pocock-type error spending function
+#' pocock(t = c(0.5, 1), sig_level = 0.025)
 #' @export
 pocock <- function(t, sig_level, ...) {
   if (any(t < 0)) 
@@ -20,6 +23,9 @@ pocock <- function(t, sig_level, ...) {
 #' @param ... optional arguments
 #' @return numeric
 #' @import stats
+#' @examples 
+#' # O'Brien-Fleming-type error spending function
+#' obrien(t = c(0.5, 1), sig_level = 0.025)
 #' @export
 obrien <- function(t, sig_level, ...) {
   if (any(t < 0)) 
