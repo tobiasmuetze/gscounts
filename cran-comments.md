@@ -15,4 +15,4 @@ This is a new release, so there are no reverse dependencies.
 
 ---
 
-This is a resubmission after adding a reference to the description. 
+This is a resubmission after adding additional examples. 
