@@ -150,7 +150,6 @@ double cpp_calc_critical(int r, NumericVector lower, NumericVector upper, double
           f_right += h(k-1, i) * cppnorm(x);
       }
     }
-    // printf("left right %f %f\n", f_left, f_right);
     // stop stat value search if root is considered interval
     if (((f_left < 0) && (f_right > 0)) || ((f_left > 0) && (f_right < 0))) {
       crit = crit - 0.5;
@@ -172,7 +171,7 @@ double cpp_calc_critical(int r, NumericVector lower, NumericVector upper, double
   
   while (fabs(f) > eps) {
     if (n_iterate > 20) {
-      printf("Maximum number of iterations reached");
+      Rf_warning("Maximum number of iterations reached");
       break;
     }
     
@@ -204,7 +203,6 @@ double cpp_calc_critical(int r, NumericVector lower, NumericVector upper, double
     
     // Newton step
     crit = crit - f / f_grad;
-    // printf("iter f fgred crit %d %f %f %f\n", n_iterate, f, f_grad, crit);
     n_iterate++;
   }
   
