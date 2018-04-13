@@ -1,5 +1,6 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
-nextsteps.md
-.travis.yml
-cran-comments.md
+^\.travis\.yml$
+^cran-comments.md$
+^README\.Rmd$
+^\.git
