@@ -61,13 +61,15 @@ double cpp_calc_critical(int r, NumericVector lower, NumericVector upper, double
   }
   
   // weights to grid points according to Jennison-Turbull (JB) p.350.
+  // weights to grid points according to Jennison-Turbull (JB) p.350.
   weight_base[0] = (grid_base[2] - grid_base[0])/6;
-  for(int i = 1; i < 6*r-1; i++) {
+  weight_base[m-2] = 4*(grid_base[m-1] - grid_base[m-3])/6;
+  weight_base[m-1] = (grid_base[m-1] - grid_base[m-3])/6;
+  for(int i = 1; i < 6*r-2; i++) {
     weight_base[2*i] = (grid_base[2*i+2] - grid_base[2*i-2])/6;
     weight_base[2*i-1] = 4*(grid_base[2*i] - grid_base[2*i-2])/6;
   }
-  weight_base[m-1] = (grid_base[m-1] - grid_base[m-3])/6;
-  
+
   // Grid and weight matrices including the shift
   for(int i = 0; i < k; i++) {
     for(int j = 0; j < m; j++) {
@@ -81,7 +83,7 @@ double cpp_calc_critical(int r, NumericVector lower, NumericVector upper, double
     shift = theta * sqrt(information(i));
     // adjustments to be made if lower boundary is not smaller than smallest grid point
     if (lower(i) > shift + grid_base[0]) {
-      for(int j = 0; j < 6*r-1; j++) {
+      for(int j = 0; j < 6*r-3; j++) { // upper bound for j to avoid going out of bounds
         if (lower(i) > shift + grid_base[2*j+2]) {
           grid(i, 2*j) = grid(i, 2*j+1) = 0;
           weight(i, 2*j) = weight(i, 2*j+1) = 0;
@@ -97,7 +99,7 @@ double cpp_calc_critical(int r, NumericVector lower, NumericVector upper, double
     }
     // adjustments to be made if upper boundary is not larger than largest grid point
     if (upper(i) < shift + grid_base[m-1]) {
-      for(int j = 6*r-2; j > 0; j--) {
+      for(int j = 6*r-2; j > 2; j--) {
         if (upper(i) <= shift + grid_base[2*j-2]) {
           grid(i, 2*j) = grid(i, 2*j-1) = 0;
           weight(i, 2*j) = weight(i, 2*j-1) = 0;
@@ -246,11 +248,12 @@ double cpp_pmultinorm(int r, NumericVector lower, NumericVector upper, NumericVe
   
   // weights to grid points according to Jennison-Turbull (JB) p.350.
   weight_base[0] = (grid_base[2] - grid_base[0])/6;
-  for(int i = 1; i < 6*r-1; i++) {
+  weight_base[m-2] = 4*(grid_base[m-1] - grid_base[m-3])/6;
+  weight_base[m-1] = (grid_base[m-1] - grid_base[m-3])/6;
+  for(int i = 1; i < 6*r-2; i++) {
     weight_base[2*i] = (grid_base[2*i+2] - grid_base[2*i-2])/6;
     weight_base[2*i-1] = 4*(grid_base[2*i] - grid_base[2*i-2])/6;
   }
-  weight_base[m-1] = (grid_base[m-1] - grid_base[m-3])/6;
   
   // write grid and weight matrices
   for(int i = 0; i < k-1; i++) {
@@ -261,11 +264,14 @@ double cpp_pmultinorm(int r, NumericVector lower, NumericVector upper, NumericVe
   }
   
   // adjustments if integration bounds are within base grid points
+  // JB page 350 mid-page
   for(int i = 0; i < k-1; i++) {
     shift = theta * sqrt(information(i));
+    // printf("shift %f %f %f \n", shift, lower(i) , shift + grid_base[0]);
+    // printf("shift %f\n", shift);
     // adjustments to be made if lower boundary is not smaller than smallest grid point
     if (lower(i) > shift + grid_base[0]) {
-      for(int j = 0; j < 6*r-1; j++) {
+      for(int j = 0; j < 6*r-3; j++) { // upper bound for j to avoid going out of bounds
         if (lower(i) > shift + grid_base[2*j+2]) {
           grid(i, 2*j) = grid(i, 2*j+1) = 0;
           weight(i, 2*j) = weight(i, 2*j+1) = 0;
@@ -281,7 +287,7 @@ double cpp_pmultinorm(int r, NumericVector lower, NumericVector upper, NumericVe
     }
     // adjustments to be made if upper boundary is not larger than largest grid point
     if (upper(i) < shift + grid_base[m-1]) {
-      for(int j = 6*r-2; j > 0; j--) {
+      for(int j = 6*r-2; j > 1; j--) {
         if (upper(i) <= shift + grid_base[2*j-2]) {
           grid(i, 2*j) = grid(i, 2*j-1) = 0;
           weight(i, 2*j) = weight(i, 2*j-1) = 0;
