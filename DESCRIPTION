@@ -1,10 +1,11 @@
 Package: gscounts
 Type: Package
 Title: Group Sequential Designs with Negative Binomial Outcomes
-Version: 0.1-1
+Version: 0.1-1.9000
 Authors@R: person("Tobias", "Muetze", role=c("aut","cre"),
-                    email="tobias.muetze@outlook.com")
-Author: Tobias Muetze [aut, cre]
+                    email="tobias.muetze@outlook.com",
+                    comment = c(ORCID = "0000-0002-4111-1941"))
+Author: Tobias Muetze [aut, cre] (<https://orcid.org/0000-0002-4111-1941>) 
 Description: Design and analysis of group sequential designs with negative
     binomial outcomes, as described by T Muetze, E Glimm, H Schmidli, T Friede (2017) <arXiv:1707.04612>.
 Depends:
