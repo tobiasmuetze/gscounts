@@ -4,8 +4,8 @@
 \alias{samplesize_from_periods}
 \title{samplesize_from_periods}
 \usage{
-samplesize_from_periods(max_info, accrual_period, study_period, random_ratio,
-  rate1, rate2, shape)
+samplesize_from_periods(max_info, accrual_period, study_period,
+  random_ratio, rate1, rate2, shape)
 }
 \description{
 Determine the total sample size for given accrual and study period

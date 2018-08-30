@@ -4,8 +4,8 @@
 \alias{get_calendartime_gsnb}
 \title{Calendar time of data looks}
 \usage{
-get_calendartime_gsnb(rate1, rate2, dispersion, t_recruit1, t_recruit2, timing,
-  followup1, followup2)
+get_calendartime_gsnb(rate1, rate2, dispersion, t_recruit1, t_recruit2,
+  timing, followup1, followup2)
 }
 \arguments{
 \item{rate1}{numeric; rate in treatment group 1}
