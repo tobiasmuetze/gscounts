@@ -1,9 +1,9 @@
 context("Key features of 'design_gsnb' - no futility")
 
-# Given accrual period and study duration assuming uniformal accrual
+# Given accrual period and maximum follow-up assuming uniformal accrual
 gscount_2looks <- design_gsnb(rate1 = 0.0875, rate2 = 0.125, dispersion = 5,
                               power = 0.8, timing = c(0.5, 1), esf = obrien,
-                              ratio_H0 = 1, sig_level = 0.025,
+                              ratio_H0 = 1, sig_level = 0.025, 
                               followup_max = 0.5, random_ratio = 1)
 # Comparison: gsDesign
 gdesign_2looks <- gsDesign::gsDesign(k = 2, timing = c(0.5, 1),

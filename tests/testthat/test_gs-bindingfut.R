@@ -1,4 +1,4 @@
-context("Key features of 'design_gsnb' - nonbinding futility")
+context("Key features of 'design_gsnb' - binding futility")
 
 # Given accrual period and study duration assuming uniformal accrual
 gscount_2looks <- design_gsnb(rate1 = 0.0875, rate2 = 0.125, dispersion = 5,
