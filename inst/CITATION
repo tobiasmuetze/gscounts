@@ -7,10 +7,8 @@ citEntry(entry = "Manual",
          note = "R package version 0.1-2",
          url = "https://CRAN.R-project.org/package=gscounts",
          textVersion = "Tobias Mütze (2018). gscounts: Group Sequential Designs with Negative Binomial Outcomes. R package version 0.1-1. URL https://CRAN.R-project.org/package=gscounts")
-
-
-
-
+         
+         
 citEntry(entry="Article",
          title = "Group sequential designs for negative binomial outcomes",
          author = personList(as.person("Tobias M{\\\"u}tze"),
@@ -19,7 +17,6 @@ citEntry(entry="Article",
                              as.person("Tim Friede")),
          journal = "Statistical Methods in Medical Research",
          year = "2018",
-         url = "https://doi.org/10.1177%2F0962280218773115",
          publisher = "Sage Publishing",
          textVersion = "Tobias Mütze, Ekkehard Glimm, Heinz Schmidli, Tim Friede (2018). Group sequential designs for negative binomial outcomes. Statistical Methods in Medical Research. https://doi.org/10.1177%2F0962280218773115."
 )

@@ -7,6 +7,7 @@ date: "<center>May 20th 2018</center>"
 ## gscounts 0.1-2
 
 * Updated references in description and citations
+* `design_gsnb` returns calendar times of data looks for fixed follow-up when accrual period is specified
 
 ## gscounts 0.1-1
 
