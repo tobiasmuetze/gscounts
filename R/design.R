@@ -183,9 +183,12 @@ design_gsnb <- function(rate1, rate2, dispersion, ratio_H0 = 1, random_ratio = 1
   x <- list(rate1 = rate1, rate2 = rate2, dispersion = dispersion, 
             ratio_H0 = ratio_H0, power = power, sig_level = sig_level, 
             timing = timing, random_ratio = random_ratio)
-  esf_eff_out <- esf(t = timing, sig_level = sig_level, ...)
+  ## Efficacy spending
+  esf_eff_out <- esf(t = timing, 
+                     sig_level = sig_level, ...)
   x$efficacy <- list(esf = esf, 
                      spend = c(esf_eff_out[1], diff(esf_eff_out)))
+  ## Futility spending
   if (!is.null(futility)) {
     esf_fut_out <- esf_futility(t = timing, sig_level = 1 - power, ...)
     x$futility <- list(esf = esf_futility,
@@ -223,14 +226,27 @@ design_gsnb <- function(rate1, rate2, dispersion, ratio_H0 = 1, random_ratio = 1
   isNull_t1 <- is.null(t_recruit1)
   isNull_t2 <- is.null(t_recruit2)
 
-  # Calcualte the missing design value
-  if (all(!isNull_fm, isNull_sp, isNull_ap)) {
-    # Calculate the sample size for a fixed individual follow-up
+  # Calcualte the missing design characteristics
+  # 1. Sample size in the case of a fixed followup.
+  # 2. Study period for given recruitment times
+  # 3. Sample size for fixed accrual and study period (using uniform recruitment)
+  if (all(!isNull_fm, isNull_sp, isNull_t1, isNull_t2)) {
+    # 1. Calculate the sample size for a fixed individual follow-up
     out <- samplesize_from_followup(max_info = x$max_info, random_ratio = random_ratio,
                                     rate1 = rate1, rate2 = rate2, shape = dispersion,
                                     followup_max = followup_max)
+    # Add calendar time of data look if accrual period or recruitment times are defined
+    if (!isNull_ap) {
+      out$t_recruit1 <- seq(0, accrual_period, length.out = out$n1)
+      out$t_recruit2 <- seq(0, accrual_period, length.out = out$n2)
+      x$calendar <- get_calendartime_gsnb(rate1 = rate1, rate2 = rate2, dispersion = dispersion, 
+                                          t_recruit1 = out$t_recruit1, t_recruit2 = out$t_recruit2,
+                                          timing = timing, 
+                                          followup1 = rep(followup_max, times = out$n1),
+                                          followup2 = rep(followup_max, times = out$n2))
+    }
   } else if (all(isNull_sp, isNull_fm, isNull_ap, !isNull_t1, !isNull_t1)) {
-    # Calculate study period for given recruitment times
+    # 2. Calculate study period for given recruitment times
     out <- studyperiod_from_recruit(max_info = x$max_info, random_ratio = random_ratio,
                                     rate1 = rate1, rate2 = rate2, shape = dispersion,
                                     t_recruit1 = t_recruit1, t_recruit2 = t_recruit2)
@@ -239,14 +255,16 @@ design_gsnb <- function(rate1, rate2, dispersion, ratio_H0 = 1, random_ratio = 1
                                         timing = timing, followup1 = out$study_period - out$t_recruit1,
                                         followup2 = out$study_period - out$t_recruit2)
   } else if (all(!isNull_sp, !isNull_ap, isNull_fm, isNull_t1, isNull_t1)) {
-    # Calculate sample size for fixed accural and study period (using uniform recruitment)
+    # 3. Calculate sample size for fixed accrual and study period (using uniform recruitment)
     out <- samplesize_from_periods(max_info = x$max_info, accrual_period = accrual_period,
                                    study_period = study_period,
                                    random_ratio = random_ratio,
                                    rate1 = rate1, rate2 = rate2, shape = dispersion)
     x$calendar <- get_calendartime_gsnb(rate1 = rate1, rate2 = rate2, dispersion = dispersion, 
-                                        t_recruit1 = out$t_recruit1, t_recruit2 = out$t_recruit2,
-                                        timing = timing, followup1 = study_period - out$t_recruit1,
+                                        t_recruit1 = out$t_recruit1, 
+                                        t_recruit2 = out$t_recruit2,
+                                        timing = timing, 
+                                        followup1 = study_period - out$t_recruit1,
                                         followup2 = study_period - out$t_recruit2)
   } else {
     stop("No appropriate combination of input arguments is defined")

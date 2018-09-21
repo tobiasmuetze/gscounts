@@ -76,7 +76,7 @@ get_calendartime_gsnb <- function(rate1, rate2, dispersion, t_recruit1, t_recrui
   analysis_times <- sapply(X = stage_info,
                            FUN = function(y) {
                              uniroot(f = function(t){eval(info_at_t) - y},
-                                     interval = c(0.001, max(followup1, followup2)),
+                                     interval = c(0.001, max(t_recruit1 + followup1, t_recruit2 + followup2)),
                                      tol = .Machine$double.eps^0.75)$root
                            })
   analysis_times
