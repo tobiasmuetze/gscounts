@@ -8,7 +8,7 @@ design_gsnb(rate1, rate2, dispersion, ratio_H0 = 1, random_ratio = 1,
   power, sig_level, timing, esf = obrien, esf_futility = NULL,
   futility = NULL, t_recruit1 = NULL, t_recruit2 = NULL,
   study_period = NULL, accrual_period = NULL, followup_max = NULL,
-  ...)
+  accrual_speed = 1, ...)
 }
 \arguments{
 \item{rate1}{numeric; assumed rate of treatment group 1 in the alternative}
@@ -45,6 +45,10 @@ with \code{K} the number of analyses, i.e. (K-1) interim analyses and final anal
 \item{accrual_period}{numeric; accrual period}
 
 \item{followup_max}{numeric; maximum exposure time of a patient}
+
+\item{accrual_speed}{numeric; determines accrual speed; values larger than 1
+result in accrual slower than linear; values betwen 0 and 1 result in accrual 
+faster than linear.}
 
 \item{...}{further arguments to be passed to the error spending function}
 }

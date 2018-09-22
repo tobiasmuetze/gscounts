@@ -13,6 +13,9 @@
 #' @param t_recruit2 numeric vector; recruit (i.e. study entry) times in group 2
 #' @param study_period numeric; study duration
 #' @param accrual_period numeric; accrual period
+#' @param accrual_speed numeric; determines accrual speed; values larger than 1
+#' result in accrual slower than linear; values betwen 0 and 1 result in accrual 
+#' faster than linear.  
 #' @param followup_max numeric; maximum exposure time of a patient
 #' @return A list containing the following components:
 #' \item{rate1}{as input}
@@ -52,9 +55,16 @@
 design_nb <- function(rate1, rate2, dispersion, power, ratio_H0 = 1, sig_level,
                       random_ratio = 1, t_recruit1 = NULL,
                       t_recruit2 = NULL, study_period = NULL, accrual_period = NULL,
-                      followup_max = NULL) {
+                      followup_max = NULL, 
+                      accrual_speed = 1) {
   
   arguments <- as.list(environment())
+  
+  # Error check for accrual speed
+  if (accrual_speed <= 0) {
+    stop("accrual_speed must be positive")
+  }
+  
   # Calculate maximum information required to obtain power
   max_info <- (qnorm(1-sig_level) + qnorm(power))^2 / log(rate1 / rate2 / ratio_H0)^2
   
@@ -80,7 +90,8 @@ design_nb <- function(rate1, rate2, dispersion, power, ratio_H0 = 1, sig_level,
     out <- samplesize_from_periods(max_info = max_info, accrual_period = accrual_period, 
                                    study_period = study_period, 
                                    random_ratio = random_ratio,
-                                   rate1 = rate1, rate2 = rate2, shape = dispersion)
+                                   rate1 = rate1, rate2 = rate2, shape = dispersion,
+                                   accrual_speed = accrual_speed)
   } else {
     stop("No appropriate combination of input arguments is defined")
   }

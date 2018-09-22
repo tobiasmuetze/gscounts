@@ -12,19 +12,38 @@ get_covar <- function(timing) {
   covar
 }
 
+#' get_recruittimes
+#' @description Calculate the times subjects enter the study
+#' @details Number of subjects in the study at study time t is given by
+#' f(t)=a * t^b with  a = n / accrual_period.
+#' For linear recruitment, b=1. 
+#' b > 1 results is slower than linear recruitment for t < accrual_period and 
+#' faster than linear recruitment for t > accrual_period. b < 1 vice versa. 
+#' @param accrual_period numeric; duration of accrual period. Must be positive.
+#' @param n numeric; number of subjects recruited at end of accrual period.
+#' @param accrual_exponent numberic; exponent in sample size function \eqn{f(t)}. 
+#' @keywords internal
+get_recruittimes <- function(accrual_period, n, accrual_exponent) {
+    accrual_period * (seq(0, 1, length.out = n))^(1/accrual_exponent)
+}
+
 
 #' samplesize_from_periods
 #' @description Determine the total sample size for given accrual and study period
 #' @keywords internal
 samplesize_from_periods <- function(max_info, accrual_period, study_period, random_ratio,
-                                    rate1, rate2, shape){
+                                    rate1, rate2, shape, accrual_speed){
   # Calculate information level depending on sample size
   body_periods <- quote({
     n1 <- ceiling(n / (1 + 1/random_ratio))
     n2 <- ceiling(n / (1 + random_ratio))
     n <- n1 + n2
-    t_recruit1 <- seq(0, accrual_period, length.out = n1)
-    t_recruit2 <- seq(0, accrual_period, length.out = n2)
+    t_recruit1 <- get_recruittimes(accrual_period = accrual_period, 
+                                   n = n1, 
+                                   accrual_exponent = accrual_speed)
+    t_recruit2 <- get_recruittimes(accrual_period = accrual_period, 
+                                   n = n2, 
+                                   accrual_exponent = accrual_speed)
     get_info_gsnb(rate1 = rate1, rate2 = rate2, dispersion = shape,
                   followup1 = study_period - t_recruit1,
                   followup2 = study_period - t_recruit2)
@@ -38,8 +57,12 @@ samplesize_from_periods <- function(max_info, accrual_period, study_period, rand
   n1 <- ceiling(n / (1 + 1/random_ratio))
   n2 <- ceiling(n / (1 + random_ratio))
   n <- n1 + n2
-  t_recruit1 <- seq(0, accrual_period, length.out = n1)
-  t_recruit2 <- seq(0, accrual_period, length.out = n2)
+  t_recruit1 <- get_recruittimes(accrual_period = accrual_period, 
+                                 n = n1, 
+                                 accrual_exponent = accrual_speed)
+  t_recruit2 <- get_recruittimes(accrual_period = accrual_period, 
+                                 n = n2, 
+                                 accrual_exponent = accrual_speed)
   max_info <- get_info_gsnb(rate1 = rate1, rate2 = rate2, dispersion = shape,
                             followup1 = study_period - t_recruit1,
                             followup2 = study_period - t_recruit2)

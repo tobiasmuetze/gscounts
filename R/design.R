@@ -43,7 +43,7 @@ add_stopping_prob <- function(x) {
   x$stop_prob$efficacy <- as.data.frame(cbind(c(x$ratio_H0, ratio_H1), eff_stop, 
                                               rowSums(eff_stop)))
   names(x$stop_prob$efficacy) <- c("Rate ratio", paste0("Look ", 1:k), "Total")
-
+  
   # (2) Probabilities for stopping for (nonbinding) futility/accepting the null
   # hypothesis under either H0 or H1
   if (!is.null(x$futility)) {
@@ -68,7 +68,7 @@ add_stopping_prob <- function(x) {
                                                 rowSums(fut_stop)))
     names(x$stop_prob$futility) <- c("Rate ratio", paste0("Look ", 1:k), "Total")
   }
-
+  
   # (3) Expected information level
   if (is.null(x$futility)) 
     expected_info <- (eff_stop %*% x$timing) * x$max_info + (1 - rowSums(eff_stop)) * x$timing[k] * x$max_info
@@ -121,6 +121,9 @@ add_stopping_prob <- function(x) {
 #' @param study_period numeric; study duration
 #' @param accrual_period numeric; accrual period
 #' @param followup_max numeric; maximum exposure time of a patient
+#' @param accrual_speed numeric; determines accrual speed; values larger than 1
+#' result in accrual slower than linear; values betwen 0 and 1 result in accrual 
+#' faster than linear.  
 #' @param ... further arguments to be passed to the error spending function
 #' @return A list with class "gsnb" containing the following components:
 #' \item{rate1}{as input}
@@ -191,8 +194,20 @@ design_gsnb <- function(rate1, rate2, dispersion, ratio_H0 = 1, random_ratio = 1
                         power, sig_level, timing, esf = obrien,
                         esf_futility = NULL, futility = NULL,
                         t_recruit1 = NULL, t_recruit2 = NULL, study_period = NULL, 
-                        accrual_period = NULL, followup_max = NULL, ...) {
-
+                        accrual_period = NULL, followup_max = NULL, 
+                        accrual_speed = 1, ...) {
+  
+  isNull_fm <- is.null(followup_max)
+  isNull_sp <- is.null(study_period)
+  isNull_ap <- is.null(accrual_period)
+  isNull_t1 <- is.null(t_recruit1)
+  isNull_t2 <- is.null(t_recruit2)
+  
+  # Error check for accrual speed
+  if (accrual_speed <= 0) {
+    stop("accrual_speed must be positive")
+  }
+  
   # Initialize object of class gsnb
   x <- list(rate1 = rate1, rate2 = rate2, dispersion = dispersion, 
             ratio_H0 = ratio_H0, power = power, sig_level = sig_level, 
@@ -216,30 +231,15 @@ design_gsnb <- function(rate1, rate2, dispersion, ratio_H0 = 1, random_ratio = 1
   
   # Add maximum information to x
   x <- add_maxinfo(x)
-
+  
   # Add stopping probabilities to x
   x <- add_stopping_prob(x)
   
   # Add power of fixed design to x
   log_effect <- log(x$rate1 / x$rate2) - log(x$ratio_H0)
   x$power_fix <- pnorm(qnorm(sig_level), mean = log_effect * sqrt(x$max_info))
-
-    
-  # arguments <- as.list(environment())
-  # K <- length(timing)
-  # # Calculate maximum information required to obtain power power_gs
-  # power_out <-  power_gsnb(ratio_H1 = rate1 / rate2, power_gs = power_gs, timing = timing,
-  #                          esf = esf, ratio_H0 = ratio_H0, sig_level = sig_level)
-  # max_info <- power_out$max_info
-  # critical <- power_out$critical
-  # power_fix <- power_out$power_fix
-  # 
-  isNull_fm <- is.null(followup_max)
-  isNull_sp <- is.null(study_period)
-  isNull_ap <- is.null(accrual_period)
-  isNull_t1 <- is.null(t_recruit1)
-  isNull_t2 <- is.null(t_recruit2)
-
+  
+  
   # Calcualte the missing design characteristics
   # 1. Sample size in the case of a fixed followup.
   # 2. Study period for given recruitment times
@@ -251,8 +251,13 @@ design_gsnb <- function(rate1, rate2, dispersion, ratio_H0 = 1, random_ratio = 1
                                     followup_max = followup_max)
     # Add calendar time of data look if accrual period or recruitment times are defined
     if (!isNull_ap) {
-      out$t_recruit1 <- seq(0, accrual_period, length.out = out$n1)
-      out$t_recruit2 <- seq(0, accrual_period, length.out = out$n2)
+      out$t_recruit1 <- get_recruittimes(accrual_period = accrual_period, 
+                                         n = out$n1, 
+                                         accrual_exponent = accrual_speed)
+      out$t_recruit2 <- get_recruittimes(accrual_period = accrual_period, 
+                                         n = out$n2, 
+                                         accrual_exponent = accrual_speed)
+      
       x$calendar <- get_calendartime_gsnb(rate1 = rate1, rate2 = rate2, dispersion = dispersion, 
                                           t_recruit1 = out$t_recruit1, t_recruit2 = out$t_recruit2,
                                           timing = timing, 
@@ -273,7 +278,8 @@ design_gsnb <- function(rate1, rate2, dispersion, ratio_H0 = 1, random_ratio = 1
     out <- samplesize_from_periods(max_info = x$max_info, accrual_period = accrual_period,
                                    study_period = study_period,
                                    random_ratio = random_ratio,
-                                   rate1 = rate1, rate2 = rate2, shape = dispersion)
+                                   rate1 = rate1, rate2 = rate2, shape = dispersion,
+                                   accrual_speed = accrual_speed)
     x$calendar <- get_calendartime_gsnb(rate1 = rate1, rate2 = rate2, dispersion = dispersion, 
                                         t_recruit1 = out$t_recruit1, 
                                         t_recruit2 = out$t_recruit2,
@@ -283,21 +289,8 @@ design_gsnb <- function(rate1, rate2, dispersion, ratio_H0 = 1, random_ratio = 1
   } else {
     stop("No appropriate combination of input arguments is defined")
   }
-  # 
-  # 
-  # # Get analysis specific rejection probabilities and expected values
-  # reject_prob_H1 <- get_rejectprob_gsnb(rate_ratio = rate1 / rate2,
-  #                                       ratio_H0 = ratio_H0, critical = critical,
-  #                                       max_info = max_info, timing = timing)
-  # reject_prob_H0 <- get_rejectprob_gsnb(rate_ratio = ratio_H0,
-  #                                       ratio_H0 = ratio_H0, critical = critical,
-  #                                       max_info = max_info, timing = timing)
-  # reject_prob <- rbind(reject_prob_H0, reject_prob_H1)
-  # rownames(reject_prob) <- NULL
-  # 
-  # out <- c(arguments[c("rate1", "rate2", "shape", "power_gs", "timing", "ratio_H0", "sig_level", "esf")], 
-  #          out, list(power_fix = power_fix, reject_prob = reject_prob, critical = power_out$critical))
-  # 
+  
+  
   # Remove maxium information from x since it is recalculated in out
   x$max_info <- NULL
   x <- c(x, out)

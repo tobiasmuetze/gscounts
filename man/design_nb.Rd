@@ -6,7 +6,8 @@
 \usage{
 design_nb(rate1, rate2, dispersion, power, ratio_H0 = 1, sig_level,
   random_ratio = 1, t_recruit1 = NULL, t_recruit2 = NULL,
-  study_period = NULL, accrual_period = NULL, followup_max = NULL)
+  study_period = NULL, accrual_period = NULL, followup_max = NULL,
+  accrual_speed = 1)
 }
 \arguments{
 \item{rate1}{numeric; assumed rate of treatment group 1 in the alternative}
@@ -33,6 +34,10 @@ under the null hypothesis, i.e. the non-inferiority or superiority margin}
 \item{accrual_period}{numeric; accrual period}
 
 \item{followup_max}{numeric; maximum exposure time of a patient}
+
+\item{accrual_speed}{numeric; determines accrual speed; values larger than 1
+result in accrual slower than linear; values betwen 0 and 1 result in accrual 
+faster than linear.}
 }
 \value{
 A list containing the following components:
