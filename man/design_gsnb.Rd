@@ -17,7 +17,7 @@ design_gsnb(rate1, rate2, dispersion, ratio_H0 = 1, random_ratio = 1,
 
 \item{dispersion}{numeric; dispersion (shape) parameter of negative binomial distribution}
 
-\item{ratio_H0}{numeric; positive number denoting the rate ratio rate_1/rate_2
+\item{ratio_H0}{numeric; positive number denoting the rate ratio \eqn{\mu_1/\mu_2}
 under the null hypothesis, i.e. the non-inferiority or superiority margin}
 
 \item{random_ratio}{numeric; randomization ratio n1/n2}
@@ -84,6 +84,18 @@ A list with class "gsnb" containing the following components:
 \description{
 Design a group sequential trial with negative binomial outcomes
 }
+\details{
+Denote  \eqn{\mu_1} and \eqn{\mu_2} the event rates in treatment groups 1 and 2.
+This function considers smaller event rates to be better. 
+The statistical hypothesis testing problem of interest is 
+\deqn{H_0: \frac{\mu_1}{\mu_2} \ge \delta  vs.  H_1: \frac{\mu_1}{\mu_2} < \delta,}
+with \eqn{\delta=}\code{ratio_H0}.
+Non-inferiority of treatment group 1 compared to treatment group 2 is tested for \eqn{\delta\in (1,\infty)}.
+Superiority of treatment group 1 over treatment group 2 is tested for $\delta \in (0,1]$.
+The calculation of the efficacy and (non-)binding futility boundaries are performed
+under the hypothesis \eqn{H_0: \frac{\mu_1}{\mu_2}= \delta} and 
+under the alternative \eqn{H_1: \frac{\mu_1}{\mu_2} = }\code{rate1} / \code{rate2}.
+}
 \examples{
 # Calculate the sample sizes for a given accrual period and study period (without futility)
 out <- design_gsnb(rate1 = 0.0875, rate2 = 0.125, dispersion = 5, 
@@ -114,4 +126,9 @@ out <- design_gsnb(rate1 = 0.0875, rate2 = 0.125, dispersion = 5,
                    power = 0.8, timing = c(0.5, 1), esf = obrien,
                    ratio_H0 = 1, sig_level = 0.025,
                    followup_max = 0.5, random_ratio = 1)
+}
+\references{
+Mütze, T., Glimm, E., Schmidli, H., & Friede, T. (2018). 
+Group sequential designs for negative binomial outcomes. 
+Statistical Methods in Medical Research, \url{https://doi.org/10.1177/0962280218773115}.
 }
