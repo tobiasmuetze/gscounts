@@ -33,4 +33,3 @@ obrien <- function(t, sig_level, ...) {
   f <- 2 - 2 * pnorm(qnorm(1-sig_level/2) / sqrt(t))
   pmin(f, sig_level)
 }
-

@@ -61,9 +61,7 @@ design_nb <- function(rate1, rate2, dispersion, power, ratio_H0 = 1, sig_level,
   arguments <- as.list(environment())
   
   # Error check for accrual speed
-  if (accrual_speed <= 0) {
-    stop("accrual_speed must be positive")
-  }
+  if (accrual_speed <= 0) stop("accrual_speed must be positive")
   
   # Calculate maximum information required to obtain power
   max_info <- (qnorm(1-sig_level) + qnorm(power))^2 / log(rate1 / rate2 / ratio_H0)^2

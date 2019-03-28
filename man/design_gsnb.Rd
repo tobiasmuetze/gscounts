@@ -40,11 +40,13 @@ with \code{K} the number of analyses, i.e. (K-1) interim analyses and final anal
 
 \item{t_recruit2}{numeric vector; recruit (i.e. study entry) times in group 2}
 
-\item{study_period}{numeric; study duration}
+\item{study_period}{numeric; study duration;
+to be set when follow-up times are not identical between subjects, NULL otherwise}
 
 \item{accrual_period}{numeric; accrual period}
 
-\item{followup_max}{numeric; maximum exposure time of a patient}
+\item{followup_max}{numeric; maximum exposure time of a subject; 
+to be set when follow-up times are to be equal for each subject, NULL otherwise}
 
 \item{accrual_speed}{numeric; determines accrual speed; values larger than 1
 result in accrual slower than linear; values betwen 0 and 1 result in accrual 
@@ -95,10 +97,17 @@ The statistical hypothesis testing problem of interest is
 \deqn{H_0: \frac{\mu_1}{\mu_2} \ge \delta  vs.  H_1: \frac{\mu_1}{\mu_2} < \delta,}
 with \eqn{\delta=}\code{ratio_H0}.
 Non-inferiority of treatment group 1 compared to treatment group 2 is tested for \eqn{\delta\in (1,\infty)}.
-Superiority of treatment group 1 over treatment group 2 is tested for $\delta \in (0,1]$.
+Superiority of treatment group 1 over treatment group 2 is tested for \eqn{\delta \in (0,1]}.
 The calculation of the efficacy and (non-)binding futility boundaries are performed
 under the hypothesis \eqn{H_0: \frac{\mu_1}{\mu_2}= \delta} and 
 under the alternative \eqn{H_1: \frac{\mu_1}{\mu_2} = }\code{rate1} / \code{rate2}.
+
+The argument `accrual_speed` is used to adjust the accrual speedn.
+Number of subjects in the study at study time t is given by
+\eqn{f(t)=a * t^b} with  \eqn{a = n / accrual_period} and \eqn{b=accrual_speed}  
+For linear recruitment, \eqn{b=1}. 
+\eqn{b > 1} results is slower than linear recruitment for \eqn{t < accrual_period} and 
+faster than linear recruitment for \eqn{t > accrual_period}. Vice verse for \eqn{b < 1}.
 }
 \examples{
 # Calculate the sample sizes for a given accrual period and study period (without futility)

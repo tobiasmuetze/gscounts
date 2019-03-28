@@ -98,10 +98,17 @@ add_stopping_prob <- function(x) {
 #' \deqn{H_0: \frac{\mu_1}{\mu_2} \ge \delta  vs.  H_1: \frac{\mu_1}{\mu_2} < \delta,}
 #' with \eqn{\delta=}\code{ratio_H0}.
 #' Non-inferiority of treatment group 1 compared to treatment group 2 is tested for \eqn{\delta\in (1,\infty)}.
-#' Superiority of treatment group 1 over treatment group 2 is tested for $\delta \in (0,1]$.
+#' Superiority of treatment group 1 over treatment group 2 is tested for \eqn{\delta \in (0,1]}.
 #' The calculation of the efficacy and (non-)binding futility boundaries are performed
 #' under the hypothesis \eqn{H_0: \frac{\mu_1}{\mu_2}= \delta} and 
 #' under the alternative \eqn{H_1: \frac{\mu_1}{\mu_2} = }\code{rate1} / \code{rate2}.
+#' 
+#' The argument `accrual_speed` is used to adjust the accrual speedn.
+#' Number of subjects in the study at study time t is given by
+#' \eqn{f(t)=a * t^b} with  \eqn{a = n / accrual_period} and \eqn{b=accrual_speed}  
+#' For linear recruitment, \eqn{b=1}. 
+#' \eqn{b > 1} results is slower than linear recruitment for \eqn{t < accrual_period} and 
+#' faster than linear recruitment for \eqn{t > accrual_period}. Vice verse for \eqn{b < 1}. 
 #' @param rate1 numeric; assumed rate of treatment group 1 in the alternative
 #' @param rate2 numeric; assumed rate of treatment group 2 in the alternative
 #' @param dispersion numeric; dispersion (shape) parameter of negative binomial distribution
@@ -118,9 +125,11 @@ add_stopping_prob <- function(x) {
 #' @param esf_futility function; futility error spending function
 #' @param t_recruit1 numeric vector; recruit (i.e. study entry) times in group 1
 #' @param t_recruit2 numeric vector; recruit (i.e. study entry) times in group 2
-#' @param study_period numeric; study duration
+#' @param study_period numeric; study duration;
+#' to be set when follow-up times are not identical between subjects, NULL otherwise
 #' @param accrual_period numeric; accrual period
-#' @param followup_max numeric; maximum exposure time of a patient
+#' @param followup_max numeric; maximum exposure time of a subject; 
+#' to be set when follow-up times are to be equal for each subject, NULL otherwise
 #' @param accrual_speed numeric; determines accrual speed; values larger than 1
 #' result in accrual slower than linear; values betwen 0 and 1 result in accrual 
 #' faster than linear.  
@@ -204,9 +213,7 @@ design_gsnb <- function(rate1, rate2, dispersion, ratio_H0 = 1, random_ratio = 1
   isNull_t2 <- is.null(t_recruit2)
   
   # Error check for accrual speed
-  if (accrual_speed <= 0) {
-    stop("accrual_speed must be positive")
-  }
+  if (accrual_speed <= 0) stop("accrual_speed must be positive")
   
   # Initialize object of class gsnb
   x <- list(rate1 = rate1, rate2 = rate2, dispersion = dispersion, 
@@ -232,9 +239,9 @@ design_gsnb <- function(rate1, rate2, dispersion, ratio_H0 = 1, random_ratio = 1
   # Add maximum information to x
   x <- add_maxinfo(x)
   
-  # Add stopping probabilities to x
-  x <- add_stopping_prob(x)
-  
+  # # Add stopping probabilities to x
+  # x <- add_stopping_prob(x)
+  # 
   # Add power of fixed design to x
   log_effect <- log(x$rate1 / x$rate2) - log(x$ratio_H0)
   x$power_fix <- pnorm(qnorm(sig_level), mean = log_effect * sqrt(x$max_info))
@@ -295,6 +302,9 @@ design_gsnb <- function(rate1, rate2, dispersion, ratio_H0 = 1, random_ratio = 1
   x$max_info <- NULL
   x <- c(x, out)
   class(x) <- "gsnb"
+  # Add stopping probabilities to x
+  x <- add_stopping_prob(x)
+  
   x
 }
 
