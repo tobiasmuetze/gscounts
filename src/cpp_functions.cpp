@@ -44,6 +44,10 @@ double cpp_calc_critical(int r, NumericVector lower, NumericVector upper, double
   double f_left, f_right; // variables for starting value search
   int n_iterate = 0;
   
+  if (error_spend == 0 && side == "lower")
+    return(R_NegInf);
+  if (error_spend == 0 && side == "upper")
+    return(R_PosInf);
   
   // base grid points according to Jennison-Turbull (JB) p.349f.
   grid_base[0] = -3 - 4 * log((double) r);
