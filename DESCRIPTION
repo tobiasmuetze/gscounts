@@ -1,7 +1,7 @@
 Package: gscounts
 Type: Package
 Title: Group Sequential Designs with Negative Binomial Outcomes
-Version: 0.1-2.9000
+Version: 0.1-3
 Authors@R: person("Tobias", "Mütze", role=c("aut","cre"),
                     email="tobias.muetze@outlook.com",
                     comment = c(ORCID = "0000-0002-4111-1941"))
