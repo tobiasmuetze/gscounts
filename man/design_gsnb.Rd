@@ -27,7 +27,10 @@ under the null hypothesis, i.e. the non-inferiority or superiority margin}
 \item{sig_level}{numeric; Type I error / significance level}
 
 \item{timing}{numeric vector; 0 < \code{timing[1]} < ... < \code{timing[K]} = 1
-with \code{K} the number of analyses, i.e. (K-1) interim analyses and final analysis}
+with \code{K} the number of analyses, i.e. (K-1) interim analyses and final analysis.
+When the timing of efficacy and futility analyses differ, timing should not be defined.
+Instead, the arguments \code{timing_eff} and \code{timing_fut} have to be used to specify
+the timing of the efficacy and futility analyses, respectively.}
 
 \item{esf}{function; error spending function}
 
@@ -52,7 +55,7 @@ to be set when follow-up times are to be equal for each subject, NULL otherwise}
 result in accrual slower than linear; values betwen 0 and 1 result in accrual 
 faster than linear.}
 
-\item{...}{further arguments to be passed to the error spending function}
+\item{...}{further arguments. Will be passed to the error spending function.}
 }
 \value{
 A list with class "gsnb" containing the following components:
@@ -139,6 +142,15 @@ out <- design_gsnb(rate1 = 0.0875, rate2 = 0.125, dispersion = 5,
                    power = 0.8, timing = c(0.5, 1), esf = obrien,
                    ratio_H0 = 1, sig_level = 0.025,
                    followup_max = 0.5, random_ratio = 1)
+                   
+# Different timing for efficacy and futility analyses
+ design_gsnb(rate1 = 1, rate2 = 2, dispersion = 5,
+             power = 0.8, esf = obrien,
+             ratio_H0 = 1, sig_level = 0.025, study_period = 3.5,
+             accrual_period = 1.25, random_ratio = 1, futility = "binding",
+             esf_futility = pocock, 
+             timing_eff = c(0.8, 1),
+             timing_fut = c(0.2, 0.5, 1))                    
 }
 \references{
 Mütze, T., Glimm, E., Schmidli, H., & Friede, T. (2018). 
