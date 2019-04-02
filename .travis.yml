@@ -1,7 +1,5 @@
 dist: xenial
 language: r
-apt_packages:
-  - mvtnorm
 cache: packages
 r:
   - oldrel
