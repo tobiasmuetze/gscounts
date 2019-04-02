@@ -1343,9 +1343,7 @@ h6 {
 </style>
 
 
-</head>
 
-<body>
 
 <style type="text/css">
 .main-container {
@@ -1370,21 +1368,82 @@ img {
 button.code-folding-btn:focus {
   outline: none;
 }
+summary {
+  display: list-item;
+}
 </style>
 
 
 
-<div class="container-fluid main-container">
-
 <!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
 <script>
 $(document).ready(function () {
   window.buildTabsets("TOC");
 });
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
 </script>
 
 <!-- code folding -->
-
 
 
 
@@ -1473,6 +1532,16 @@ div.tocify {
 
 </style>
 
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
 <!-- setup 3col/9col grid for toc_float and main content  -->
 <div class="row-fluid">
 <div class="col-xs-12 col-sm-4 col-md-3">
@@ -1492,12 +1561,12 @@ div.tocify {
 <h1 class="title toc-ignore"><center>
 Group sequential designs for negative binomial outcomes using gscounts
 </center></h1>
-<h4 class="author"><em><center>
+<h4 class="author"><center>
 Tobias Mütze
-</center></em></h4>
-<h4 class="date"><em><center>
-2018-09-13
-</center></em></h4>
+</center></h4>
+<h4 class="date"><center>
+2019-04-02
+</center></h4>
 
 </div>
 
@@ -1511,7 +1580,7 @@ Tobias Mütze
 <hr />
 <div id="statistical-model" class="section level1">
 <h1><span class="header-section-number">1</span> Statistical model</h1>
-<p>In a group sequential design the hypothesis of interest is tested several times during the course of the clinical trial. At each data look, that is what the interim analyses are referred to, the decision whether to stop for efficacy or futility is made. In the followig, we briefly outline the statistical model. For more details, the reader is referred to the manuscript by Mütze <em>et al.</em> (2017). We define <span class="math inline">\(K\)</span> as the total number of data looks. We model the number of events of patient <span class="math inline">\(j=1,\ldots, n_{i}\)</span> in treatment group <span class="math inline">\(i=1,2\)</span> at look <span class="math inline">\(k=1,\ldots, K\)</span> as a homogeneous Poisson point process with rate <span class="math inline">\(\lambda_{ij}\)</span>. Let <span class="math inline">\(t_{ijk}\)</span> be the exposure time of patient <span class="math inline">\(j\)</span> in treatment group <span class="math inline">\(i\)</span> at look <span class="math inline">\(k\)</span>. After an exposure time of <span class="math inline">\(t_{ijk}\)</span>, the number of events <span class="math inline">\(Y_{ijk}\)</span> of patient <span class="math inline">\(j\)</span> in treatment group <span class="math inline">\(i\)</span> at look <span class="math inline">\(k\)</span> given the rate <span class="math inline">\(\lambda_{ij}\)</span> is Poisson distributed with rate <span class="math inline">\(t_{ijk}\lambda_{ij}\)</span>, that is <span class="math display">\[\begin{align*}
+<p>In a group sequential design the hypothesis of interest is tested several times during the course of the clinical trial. At each data look, that is what the interim analyses are referred to, the decision whether to stop for efficacy or futility is made. In the following, we briefly outline the statistical model. For more details, the reader is referred to the manuscript by Mütze <em>et al.</em> (2017). We define <span class="math inline">\(K\)</span> as the total number of data looks. We model the number of events of patient <span class="math inline">\(j=1,\ldots, n_{i}\)</span> in treatment group <span class="math inline">\(i=1,2\)</span> at look <span class="math inline">\(k=1,\ldots, K\)</span> as a homogeneous Poisson point process with rate <span class="math inline">\(\lambda_{ij}\)</span>. Let <span class="math inline">\(t_{ijk}\)</span> be the exposure time of patient <span class="math inline">\(j\)</span> in treatment group <span class="math inline">\(i\)</span> at look <span class="math inline">\(k\)</span>. After an exposure time of <span class="math inline">\(t_{ijk}\)</span>, the number of events <span class="math inline">\(Y_{ijk}\)</span> of patient <span class="math inline">\(j\)</span> in treatment group <span class="math inline">\(i\)</span> at look <span class="math inline">\(k\)</span> given the rate <span class="math inline">\(\lambda_{ij}\)</span> is Poisson distributed with rate <span class="math inline">\(t_{ijk}\lambda_{ij}\)</span>, that is <span class="math display">\[\begin{align*}
 Y_{ijk}|\lambda_{ij} \sim \operatorname{Pois}(t_{ijk} \lambda_{ij}).
 \end{align*}\]</span> In other words, the event rate <span class="math inline">\(\lambda_{ij}\)</span> is subject specific. The between patient heterogeneity in the event rates is modeled by assuming that the rates <span class="math inline">\(\lambda_{ij}\)</span> are Gamma distributed with shape parameter <span class="math inline">\(\alpha=1/\phi\)</span> and rate parameter <span class="math inline">\(\beta=1/(\phi \mu_i)\)</span>, i.e. <span class="math display">\[\begin{align*}
 \lambda_{ij} \sim \Gamma\left(\frac{1}{\phi}, \frac{1}{\phi \mu_i}\right).
@@ -1553,7 +1622,7 @@ out</code></pre>
 ##  Rate ratio under alternative:  0.7 
 ##  Significance level:  0.025 
 ##  Power group sequential design:  0.8 
-##  Power fixed design:  0.8059 
+##  Power fixed design:  0.8061 
 ##  Maximum information:  62.66 
 ##  Number of looks:  3 
 ##  Information times of looks:  0.4, 0.7, 1.0 
@@ -1572,14 +1641,14 @@ out</code></pre>
 ##        3                  1     0.017616      -2.0005
 ## 
 ## Probabilities of stopping for efficacy, i.e. for rejecting H0
-##  Rate ratio       Look 1      Look 2     Look 3     Total
-##         1.0 0.0003941518 0.006990339 0.01761551 0.0250000
-##         0.7 0.0580345286 0.410200504 0.33176511 0.8000001
+##  Rate ratio       Look 1      Look 2     Look 3    Total
+##         1.0 0.0003941518 0.006990339 0.01761551 0.025000
+##         0.7 0.0580726841 0.410335143 0.33173722 0.800145
 ## 
 ## Expected information level
 ##  Rate ratio     E[I]
-##         1.0 62.49446
-##         0.7 52.75088</code></pre>
+##         1.0 62.51748
+##         0.7 52.76634</code></pre>
 <p>The R function <code>design_gsnb</code> returns an object of class <em>gsnb</em> which contains the relevant design information. To assess the single components and especially the ones which are not shown in the comprehensive output above, for instance the assumed study entry times, the notation <code>out$</code> followed by one following names is used.</p>
 <pre><code>## List of 22
 ##  $ rate1         : num 0.0875
@@ -1593,21 +1662,10 @@ out</code></pre>
 ##  $ efficacy      :List of 3
 ##   ..$ esf     :function (t, sig_level, ...)  
 ##   .. ..- attr(*, &quot;srcref&quot;)= 'srcref' int [1:8] 30 11 35 1 11 1 30 35
-##   .. .. ..- attr(*, &quot;srcfile&quot;)=Classes 'srcfilecopy', 'srcfile' &lt;environment: 0x5564377c6a98&gt; 
+##   .. .. ..- attr(*, &quot;srcfile&quot;)=Classes 'srcfilecopy', 'srcfile' &lt;environment: 0x5652030042e8&gt; 
 ##   ..$ spend   : num [1:3] 0.000394 0.00699 0.017616
 ##   ..$ critical: num [1:3] -3.36 -2.44 -2
 ##  $ ratio_H1      : num 0.7
-##  $ stop_prob     :List of 1
-##   ..$ efficacy:'data.frame': 2 obs. of  5 variables:
-##   .. ..$ Rate ratio: num [1:2] 1 0.7
-##   .. ..$ Look 1    : num [1:2] 0.000394 0.058035
-##   .. ..$ Look 2    : num [1:2] 0.00699 0.4102
-##   .. ..$ Look 3    : num [1:2] 0.0176 0.3318
-##   .. ..$ Total     : num [1:2] 0.025 0.8
-##  $ expected_info :'data.frame':  2 obs. of  2 variables:
-##   ..$ Rate ratio: num [1:2] 1 0.7
-##   ..$ E[I]      : num [1:2] 62.5 52.8
-##  $ power_fix     : num 0.806
 ##  $ calendar      : num [1:3] 1.33 2.21 4
 ##  $ n             : num 1980
 ##  $ n1            : num 990
@@ -1617,6 +1675,17 @@ out</code></pre>
 ##  $ max_info      : num 62.7
 ##  $ accrual_period: num 1.25
 ##  $ study_period  : num 4
+##  $ stop_prob     :List of 1
+##   ..$ efficacy:'data.frame': 2 obs. of  5 variables:
+##   .. ..$ Rate ratio: num [1:2] 1 0.7
+##   .. ..$ Look 1    : num [1:2] 0.000394 0.058073
+##   .. ..$ Look 2    : num [1:2] 0.00699 0.41034
+##   .. ..$ Look 3    : num [1:2] 0.0176 0.3317
+##   .. ..$ Total     : num [1:2] 0.025 0.8
+##  $ expected_info :'data.frame':  2 obs. of  2 variables:
+##   ..$ Rate ratio: num [1:2] 1 0.7
+##   ..$ E[I]      : num [1:2] 62.5 52.8
+##  $ power_fix     : num 0.806
 ##  - attr(*, &quot;class&quot;)= chr &quot;gsnb&quot;</code></pre>
 <p>By default, no futility boundaries are calculated, however, the function <code>design_gsnb</code> allows calculating both binding and non-binding futility boundaries. To calculate futility boundaries, the type of futility, i.e. binding or non-binding, has to be specified using the <code>futility</code> argument. The futility spending function is set through the argument <code>esf_futility</code>. Next, a group sequential design with binding futility boundaries is planned. The O’Brien-Fleming-type error spending function is considered for the futility spending.</p>
 <pre class="r"><code>out2 &lt;- design_gsnb(rate1 = 0.0875, rate2 = 0.125, dispersion = 5, 
@@ -1637,7 +1706,7 @@ out2</code></pre>
 ##  Rate ratio under alternative:  0.7 
 ##  Significance level:  0.025 
 ##  Power group sequential design:  0.8 
-##  Power fixed design:  0.825 
+##  Power fixed design:  0.8248 
 ##  Maximum information:  65.83 
 ##  Number of looks:  3 
 ##  Information times of looks:  0.4, 0.7, 1.0 
@@ -1656,23 +1725,23 @@ out2</code></pre>
 ##        3                  1     0.017616      -1.9300     0.074415      -1.9300
 ## 
 ## Probabilities of stopping for efficacy, i.e. for rejecting H0
-##  Rate ratio       Look 1      Look 2     Look 3 Total
-##         1.0 0.0003941518 0.006990339 0.01761551 0.025
-##         0.7 0.0634700709 0.428427367 0.30810257 0.800
+##  Rate ratio       Look 1      Look 2     Look 3     Total
+##         1.0 0.0003941518 0.006990339 0.01761551 0.0250000
+##         0.7 0.0634275108 0.428289634 0.30813899 0.7998561
 ## 
 ## Probabilities of stopping for futility, i.e. for accepting H0
-##  Rate ratio     Look 1     Look 2     Look 3 Total
-##         1.0 0.54410188 0.34879491 0.08210322 0.975
-##         0.7 0.04273293 0.08285192 0.07441514 0.200
+##  Rate ratio     Look 1     Look 2     Look 3     Total
+##         1.0 0.54410188 0.34879491 0.08210322 0.9750000
+##         0.7 0.04276404 0.08291204 0.07446779 0.2001439
 ## 
 ## Expected information level
 ##  Rate ratio     E[I]
-##         1.0 37.31022
-##         0.7 51.55608</code></pre>
+##         1.0 37.29628
+##         0.7 51.53880</code></pre>
 </div>
 <div id="sample-size-for-equal-exposure-times" class="section level3">
 <h3><span class="header-section-number">2.1.2</span> Sample size for equal exposure times</h3>
-<p>In some cases patients are only followed for a prespecified time period which is identical for all patients. In this case the syntax for determing the sample size is slightly different. We assume a Pocock-type error spending function and a planned follow-up time of 0.5 years for every patient. The data look is performed at <span class="math inline">\(50\%\)</span> of the maximum information time <span class="math inline">\(\mathcal{I}_{max}\)</span>. Futility stopping is not considered in this example. The next chunk shows the code for calculating the sample size of the group sequential design in the case of equal follow-up times.</p>
+<p>In some cases patients are only followed for a prespecified time period which is identical for all patients. In this case the syntax for determining the sample size is slightly different. We assume a Pocock-type error spending function and a planned follow-up time of 0.5 years for every patient. The data look is performed at <span class="math inline">\(50\%\)</span> of the maximum information time <span class="math inline">\(\mathcal{I}_{max}\)</span>. Futility stopping is not considered in this example. The next chunk shows the code for calculating the sample size of the group sequential design in the case of equal follow-up times.</p>
 <pre class="r"><code>out3 &lt;- design_gsnb(rate1 = 4.2, rate2 = 8.4, dispersion = 3, ratio_H0 = 1, 
                    power = 0.8, sig_level = 0.025, timing = c(0.5, 1), 
                    esf = pocock, followup_max = 0.5, random_ratio = 1)
@@ -1735,7 +1804,7 @@ out6$n2</code></pre>
 ## 8  experiment   7 0.007583418        NA
 ## 9  experiment   8 0.008847321 1.2756962
 ## 10 experiment   8 0.008847321 2.5748877</code></pre>
-<p>When a clinical trial with group sequential design is planned, the decision on the information time of the data look has to be made. This decision is essential in that it affects the required maximum information. In our example clinical trial, the data looks are planned to be performed at information times 0.4, 0.7, 1. There are various potential ways in how to proceed in practice: the information level of the clinical trial could be monitored and the data looks are performed when the respective information levels are achieved, or alternatively, the data looks could be performed at the calendar times which correspond to the planned information times of the data looks under the alternative. When the effect and the nuisance parameters are specified correctly in the planning phase, the calendar times at which the respective information levels are achieved and the calendar times determined during the planning phase will be similar. The function <code>design_gsnb</code> calculates the calendar times under the specified alternative which are 1.333, 2.208, 4 years for the example clinical trial. It is important to emphasize that the critical values have to be recalculated when the information times of the data looks are changed, otherwise the type I error rate will be affected. Moreover, a change of the information time of the data looks will affect the power. In the following, we focus on the case where the information level is monitored. One way of monitoring the information level is to calculate the estimates <span class="math inline">\(\hat{\lambda}_1\)</span>, and <span class="math inline">\(\hat{\lambda}_2\)</span>, and <span class="math inline">\(\hat{\phi}\)</span> of the rates and the dispersion shape parameter after every new event. Then, the information level after that event is calcualted using the function <code>get_info_gsnb()</code>. The next chunk shows the code for monitoring the information level after the event at calendar time <code>t = 1.297</code> years. This is also the calendar time of the first data look since the information level is <span class="math inline">\(0.4\mathcal{I}_{max}=25.07\)</span>.</p>
+<p>When a clinical trial with group sequential design is planned, the decision on the information time of the data look has to be made. This decision is essential in that it affects the required maximum information. In our example clinical trial, the data looks are planned to be performed at information times 0.4, 0.7, 1. There are various potential ways in how to proceed in practice: the information level of the clinical trial could be monitored and the data looks are performed when the respective information levels are achieved, or alternatively, the data looks could be performed at the calendar times which correspond to the planned information times of the data looks under the alternative. When the effect and the nuisance parameters are specified correctly in the planning phase, the calendar times at which the respective information levels are achieved and the calendar times determined during the planning phase will be similar. The function <code>design_gsnb</code> calculates the calendar times under the specified alternative which are 1.333, 2.208, 4 years for the example clinical trial. It is important to emphasize that the critical values have to be recalculated when the information times of the data looks are changed, otherwise the type I error rate will be affected. Moreover, a change of the information time of the data looks will affect the power. In the following, we focus on the case where the information level is monitored. One way of monitoring the information level is to calculate the estimates <span class="math inline">\(\hat{\lambda}_1\)</span>, and <span class="math inline">\(\hat{\lambda}_2\)</span>, and <span class="math inline">\(\hat{\phi}\)</span> of the rates and the dispersion shape parameter after every new event. Then, the information level after that event is calculated using the function <code>get_info_gsnb()</code>. The next chunk shows the code for monitoring the information level after the event at calendar time <code>t = 1.297</code> years. This is also the calendar time of the first data look since the information level is <span class="math inline">\(0.4\mathcal{I}_{max}=25.07\)</span>.</p>
 <pre class="r"><code>library(dplyr)
 # Filter data to obtain all the events which happened prior to t = 1.2906
 t &lt;- 1.2972
@@ -1793,7 +1862,7 @@ out_fix</code></pre>
 ##  Sample size group 2:  975 
 ##  Accrual period:  1.25 
 ##  Study duration:  4</code></pre>
-<p>The output of the function <code>design_nb</code> is an object of class <code>nb</code>. The printed object contains the distribution parameters, the listed hypothesis testing parameters, and the design parameters, i.e. sample size accrual periord, and study duration. Not every parameter in the output object is printed, though. The assumed recruitment times of the patients, are not printed. The next chunk shows the internal structure of an object of class <code>nb</code>.</p>
+<p>The output of the function <code>design_nb</code> is an object of class <code>nb</code>. The printed object contains the distribution parameters, the listed hypothesis testing parameters, and the design parameters, i.e. sample size accrual period, and study duration. Not every parameter in the output object is printed, though. The assumed recruitment times of the patients, are not printed. The next chunk shows the internal structure of an object of class <code>nb</code>.</p>
 <pre class="r"><code>str(out_fix)</code></pre>
 <pre><code>## List of 14
 ##  $ rate1         : num 0.0875

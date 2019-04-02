@@ -103,7 +103,7 @@ add_stopping_prob <- function(x) {
 #' under the hypothesis \eqn{H_0: \frac{\mu_1}{\mu_2}= \delta} and 
 #' under the alternative \eqn{H_1: \frac{\mu_1}{\mu_2} = }\code{rate1} / \code{rate2}.
 #' 
-#' The argument `accrual_speed` is used to adjust the accrual speedn.
+#' The argument `accrual_speed` is used to adjust the accrual speed.
 #' Number of subjects in the study at study time t is given by
 #' \eqn{f(t)=a * t^b} with  \eqn{a = n / accrual_period} and \eqn{b=accrual_speed}  
 #' For linear recruitment, \eqn{b=1}. 
@@ -134,7 +134,7 @@ add_stopping_prob <- function(x) {
 #' @param followup_max numeric; maximum exposure time of a subject; 
 #' to be set when follow-up times are to be equal for each subject, NULL otherwise
 #' @param accrual_speed numeric; determines accrual speed; values larger than 1
-#' result in accrual slower than linear; values betwen 0 and 1 result in accrual 
+#' result in accrual slower than linear; values between 0 and 1 result in accrual 
 #' faster than linear.  
 #' @param ... further arguments. Will be passed to the error spending function.
 #' @return A list with class "gsnb" containing the following components:

@@ -36,7 +36,7 @@ under the null hypothesis, i.e. the non-inferiority or superiority margin}
 \item{followup_max}{numeric; maximum exposure time of a patient}
 
 \item{accrual_speed}{numeric; determines accrual speed; values larger than 1
-result in accrual slower than linear; values betwen 0 and 1 result in accrual 
+result in accrual slower than linear; values between 0 and 1 result in accrual 
 faster than linear.}
 }
 \value{

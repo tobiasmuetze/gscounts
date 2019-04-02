@@ -11,7 +11,7 @@ get_recruittimes(accrual_period, n, accrual_exponent)
 
 \item{n}{numeric; number of subjects recruited at end of accrual period.}
 
-\item{accrual_exponent}{numberic; exponent in sample size function \eqn{f(t)}.}
+\item{accrual_exponent}{numeric; exponent in sample size function \eqn{f(t)}.}
 }
 \description{
 Calculate the times subjects enter the study

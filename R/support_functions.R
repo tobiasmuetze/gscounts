@@ -21,7 +21,7 @@ get_covar <- function(timing) {
 #' faster than linear recruitment for t > accrual_period. b < 1 vice versa. 
 #' @param accrual_period numeric; duration of accrual period. Must be positive.
 #' @param n numeric; number of subjects recruited at end of accrual period.
-#' @param accrual_exponent numberic; exponent in sample size function \eqn{f(t)}. 
+#' @param accrual_exponent numeric; exponent in sample size function \eqn{f(t)}. 
 #' @keywords internal
 get_recruittimes <- function(accrual_period, n, accrual_exponent) {
     accrual_period * (seq(0, 1, length.out = n))^(1/accrual_exponent)

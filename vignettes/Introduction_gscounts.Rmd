@@ -38,7 +38,7 @@ vignette: >
 In a group sequential design the hypothesis of interest is tested several times 
 during the course of the clinical trial. At each data look, that is what the 
 interim analyses are referred to, the decision whether to stop for efficacy or futility is made.
-In the followig, we briefly outline the statistical model. For more details, the reader is 
+In the following, we briefly outline the statistical model. For more details, the reader is 
 referred to the manuscript by Mütze *et al.* (2017).
 We define $K$ as the total number of data looks.
 We model the number of events of patient $j=1,\ldots, n_{i}$ in treatment group $i=1,2$ at look $k=1,\ldots, K$ as a homogeneous Poisson point process with rate $\lambda_{ij}$. 
@@ -138,7 +138,7 @@ out2
 ### Sample size for equal exposure times
 
 In some cases patients are only followed for a prespecified time period which is 
-identical for all patients. In this case the syntax for determing the 
+identical for all patients. In this case the syntax for determining the 
 sample size is slightly different. We assume a Pocock-type error spending function 
 and a planned follow-up time of 0.5 years for every patient.
 The data look is performed at $50\%$ of the maximum information time $\mathcal{I}_{max}$.
@@ -251,7 +251,7 @@ In the following, we focus on the case where the information level is monitored.
 One way of monitoring the information level is to calculate the estimates $\hat{\lambda}_1$, and
 $\hat{\lambda}_2$, and $\hat{\phi}$ of the rates and the dispersion shape parameter 
 after every new event. Then, the information level after that event is 
-calcualted using the function `get_info_gsnb()`.
+calculated using the function `get_info_gsnb()`.
 The next chunk shows the code for monitoring the information level after the event at 
 calendar time `t = 1.297` years.
 This is also the calendar time of the first data look since the information level 
@@ -318,7 +318,7 @@ out_fix
 
 The output of the function `design_nb` is an object of class `nb`. 
 The printed object contains the distribution parameters, the listed hypothesis testing parameters, 
-and the design parameters, i.e. sample size accrual periord, and study duration. 
+and the design parameters, i.e. sample size accrual period, and study duration. 
 Not every parameter in the output object is printed, though. The assumed recruitment times of the 
 patients, are not printed. The next chunk shows the internal structure of an object of class `nb`.
 
