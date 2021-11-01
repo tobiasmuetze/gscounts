@@ -12,3 +12,8 @@ R CMD check succeeded
 ## Reverse dependencies
 
 There are no reverse dependencies.
+
+## Fix requested before package was taken off cran
+
+Tests in /tests are only started when suggested packages are available. 
+Fix uses code snippet from Section 1.1.3.1 of 'Writing R Extensions'
