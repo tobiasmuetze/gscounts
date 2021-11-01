@@ -1,6 +1,5 @@
 ## Test environments
-* local ubuntu mate 18.04 install, R 3.5.3, using valgrind
-* ubuntu 14.04 (on travis-ci), R release, R devel
+* local ubuntu mate 20.04.3 install, R 4.1.1, using valgrind
 * win-builder (oldrel, devel, and release)
 * r-hub using check_rhub with default settings
 

@@ -4,10 +4,21 @@
 \alias{design_nb}
 \title{Clinical trials with negative binomial outcomes}
 \usage{
-design_nb(rate1, rate2, dispersion, power, ratio_H0 = 1, sig_level,
-  random_ratio = 1, t_recruit1 = NULL, t_recruit2 = NULL,
-  study_period = NULL, accrual_period = NULL, followup_max = NULL,
-  accrual_speed = 1)
+design_nb(
+  rate1,
+  rate2,
+  dispersion,
+  power,
+  ratio_H0 = 1,
+  sig_level,
+  random_ratio = 1,
+  t_recruit1 = NULL,
+  t_recruit2 = NULL,
+  study_period = NULL,
+  accrual_period = NULL,
+  followup_max = NULL,
+  accrual_speed = 1
+)
 }
 \arguments{
 \item{rate1}{numeric; assumed rate of treatment group 1 in the alternative}

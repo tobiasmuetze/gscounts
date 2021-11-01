@@ -4,7 +4,9 @@
 \name{hospitalizations}
 \alias{hospitalizations}
 \title{Hospitalizations}
-\format{A data frame with 2323 rows and 4 variables}
+\format{
+A data frame with 2323 rows and 4 variables
+}
 \usage{
 data(hospitalizations)
 }

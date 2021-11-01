@@ -4,11 +4,26 @@
 \alias{design_gsnb}
 \title{Group sequential design with negative binomial outcomes}
 \usage{
-design_gsnb(rate1, rate2, dispersion, ratio_H0 = 1, random_ratio = 1,
-  power, sig_level, timing, esf = obrien, esf_futility = NULL,
-  futility = NULL, t_recruit1 = NULL, t_recruit2 = NULL,
-  study_period = NULL, accrual_period = NULL, followup_max = NULL,
-  accrual_speed = 1, ...)
+design_gsnb(
+  rate1,
+  rate2,
+  dispersion,
+  ratio_H0 = 1,
+  random_ratio = 1,
+  power,
+  sig_level,
+  timing,
+  esf = obrien,
+  esf_futility = NULL,
+  futility = NULL,
+  t_recruit1 = NULL,
+  t_recruit2 = NULL,
+  study_period = NULL,
+  accrual_period = NULL,
+  followup_max = NULL,
+  accrual_speed = 1,
+  ...
+)
 }
 \arguments{
 \item{rate1}{numeric; assumed rate of treatment group 1 in the alternative}

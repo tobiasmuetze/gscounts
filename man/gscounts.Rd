@@ -3,7 +3,6 @@
 \docType{package}
 \name{gscounts}
 \alias{gscounts}
-\alias{gscounts-package}
 \title{gscounts}
 \description{
 Design and monitoring of group sequential designs with negative binomial data.

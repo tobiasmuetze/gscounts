@@ -4,8 +4,14 @@
 \alias{samplesize_from_followup}
 \title{samplesize_from_followup}
 \usage{
-samplesize_from_followup(max_info, random_ratio, rate1, rate2, shape,
-  followup_max)
+samplesize_from_followup(
+  max_info,
+  random_ratio,
+  rate1,
+  rate2,
+  shape,
+  followup_max
+)
 }
 \description{
 Determine the sample size from a given follow-up time

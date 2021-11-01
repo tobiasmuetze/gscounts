@@ -5,6 +5,11 @@
 
 using namespace Rcpp;
 
+#ifdef RCPP_USE_GLOBAL_ROSTREAM
+Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
+Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
+#endif
+
 // cpp_calc_critical
 double cpp_calc_critical(int r, NumericVector lower, NumericVector upper, double error_spend, NumericVector information, double theta, String side);
 RcppExport SEXP _gscounts_cpp_calc_critical(SEXP rSEXP, SEXP lowerSEXP, SEXP upperSEXP, SEXP error_spendSEXP, SEXP informationSEXP, SEXP thetaSEXP, SEXP sideSEXP) {

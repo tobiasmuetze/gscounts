@@ -4,8 +4,15 @@
 \alias{studyperiod_from_recruit}
 \title{studyperiod_from_recruit}
 \usage{
-studyperiod_from_recruit(max_info, random_ratio, rate1, rate2, shape,
-  t_recruit1, t_recruit2)
+studyperiod_from_recruit(
+  max_info,
+  random_ratio,
+  rate1,
+  rate2,
+  shape,
+  t_recruit1,
+  t_recruit2
+)
 }
 \description{
 Determine the study period for given recruitment times
