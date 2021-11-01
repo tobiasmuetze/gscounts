@@ -1,8 +1,13 @@
 ---
 title: "<center>News for *gscounts*</center>"
 author: "<center>Tobias Mütze</center>"
-date: "<center>April 2nd 2019</center>"
+date: "<center>November 1st 2021</center>"
 ---
+
+## gscounts 0.1-4
+
+* Fixed typo in vignette
+* 
 
 ## gscounts 0.1-3
 

@@ -94,9 +94,9 @@ library(gscounts)
 ### Sample size for unequal exposure times with uniform recruitment
 The first case study focus on determining the sample size for a group sequential 
 design where we assume a rate ratio in the alternative of $\mu_1 / \mu_2 = 0.0875/0.125=0.7$ 
-to be tested with the margin $\delta=1$. The dispersion parameter is chosen to be $\phi = 0.8$. 
+to be tested with the margin $\delta=1$. The dispersion parameter is chosen to be $\phi = 5$. 
 The target power for the test in the group sequential design is $1-\beta=0.8$, 
-the data looks are performed at information times of $50\%$ and $70\%$ of the 
+the data looks are performed at information times of $40\%$ and $70\%$ of the 
 maximum information $\mathcal{I}_{max}$, and the O'Brien-Fleming-type error 
 spending function is considered to allocated the significance level $\alpha=0.025$. 
 Furthermore, it is assumed that patients are entering the study uniformly over a 

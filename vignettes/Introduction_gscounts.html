@@ -7,6 +7,7 @@
 <meta charset="utf-8" />
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
 
@@ -85,8 +86,6 @@ overflow: auto;
 margin-left: 2%;
 position: fixed;
 border: 1px solid #ccc;
-webkit-border-radius: 6px;
-moz-border-radius: 6px;
 border-radius: 6px;
 }
 
@@ -114,9 +113,14 @@ font-size: 12px;
 .tocify-subheader .tocify-subheader {
 text-indent: 30px;
 }
-
 .tocify-subheader .tocify-subheader .tocify-subheader {
 text-indent: 40px;
+}
+.tocify-subheader .tocify-subheader .tocify-subheader .tocify-subheader {
+text-indent: 50px;
+}
+.tocify-subheader .tocify-subheader .tocify-subheader .tocify-subheader .tocify-subheader {
+text-indent: 60px;
 }
 
 .tocify .tocify-item > a, .tocify .nav-list .nav-header {
@@ -520,13 +524,13 @@ float: none;
 
           item.append($("<a/>", {
 
-            "text": self.text()
+            "html": self.html()
 
           }));
 
         } else {
 
-          item.text(self.text());
+          item.html(self.html());
 
         }
 
@@ -1357,7 +1361,6 @@ code {
 }
 img {
   max-width:100%;
-  height: auto;
 }
 .tabbed-pane {
   padding-top: 12px;
@@ -1431,48 +1434,9 @@ summary {
 }
 </style>
 
-<script>
-$(document).ready(function () {
-  window.buildTabsets("TOC");
-});
-
-$(document).ready(function () {
-  $('.tabset-dropdown > .nav-tabs > li').click(function () {
-    $(this).parent().toggleClass('nav-tabs-open')
-  });
-});
-</script>
-
 <!-- code folding -->
 
 
-
-<script>
-$(document).ready(function ()  {
-
-    // move toc-ignore selectors from section div to header
-    $('div.section.toc-ignore')
-        .removeClass('toc-ignore')
-        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
-
-    // establish options
-    var options = {
-      selectors: "h1,h2,h3",
-      theme: "bootstrap3",
-      context: '.toc-content',
-      hashGenerator: function (text) {
-        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
-      },
-      ignoreSelector: ".toc-ignore",
-      scrollTo: 0
-    };
-    options.showAndHide = true;
-    options.smoothScroll = true;
-
-    // tocify
-    var toc = $("#TOC").tocify(options).data("toc-tocify");
-});
-</script>
 
 <style type="text/css">
 
@@ -1521,8 +1485,6 @@ div.tocify {
 
 .tocify-subheader .tocify-item {
   font-size: 0.90em;
-  padding-left: 25px;
-  text-indent: 0;
 }
 
 .tocify .list-group-item {
@@ -1565,7 +1527,7 @@ Group sequential designs for negative binomial outcomes using gscounts
 Tobias Mütze
 </center></h4>
 <h4 class="date"><center>
-2019-04-02
+2021-11-01
 </center></h4>
 
 </div>
@@ -1584,7 +1546,7 @@ Tobias Mütze
 Y_{ijk}|\lambda_{ij} \sim \operatorname{Pois}(t_{ijk} \lambda_{ij}).
 \end{align*}\]</span> In other words, the event rate <span class="math inline">\(\lambda_{ij}\)</span> is subject specific. The between patient heterogeneity in the event rates is modeled by assuming that the rates <span class="math inline">\(\lambda_{ij}\)</span> are Gamma distributed with shape parameter <span class="math inline">\(\alpha=1/\phi\)</span> and rate parameter <span class="math inline">\(\beta=1/(\phi \mu_i)\)</span>, i.e. <span class="math display">\[\begin{align*}
 \lambda_{ij} \sim \Gamma\left(\frac{1}{\phi}, \frac{1}{\phi \mu_i}\right).
-\end{align*}\]</span> Then, the random variable <span class="math inline">\(Y_{ijk}\)</span> is marginally negative binomially distributed with rate <span class="math inline">\(t_{ijk}\mu_i\)</span> and dispersion parameter <span class="math inline">\(\phi\)</span>, i.e. <span class="math display">\[\begin{align*}
+\end{align*}\]</span> Then, the random variable <span class="math inline">\(Y_{ijk}\)</span> is marginally negative binomially distributed with rate <span class="math inline">\(t_{ijk}\mu_i\)</span> and dispersion parameter <span class="math inline">\(\phi\)</span>, i.e.  <span class="math display">\[\begin{align*}
 Y_{ijk} \sim \operatorname{NB}\left(t_{ijk}\mu_i, \phi\right).
 \end{align*}\]</span> The probability mass function of <span class="math inline">\(Y_{ijk}\)</span> is given by <span class="math display">\[\begin{align*}
 \mathbb{P}\left(Y_{ijk}=y\right)=\frac{\Gamma(y + 1/\phi)}{\Gamma(1/\phi)y!}\left(\frac{1}{1+\phi t_{ijk} \mu_i}\right)^{1/\phi} \left(\frac{\phi t_{ijk}\mu_i}{1 + \phi t_{ijk}\mu_i }\right)^{y},\qquad y\in \mathcal{N}_{0}
@@ -1604,7 +1566,7 @@ H_0: \frac{\mu_1}{\mu_2}\geq \delta \quad \text{vs.} \quad H_1: \frac{\mu_1}{\mu
 <h2><span class="header-section-number">2.1</span> Negative binomial recurrent events</h2>
 <div id="sample-size-for-unequal-exposure-times-with-uniform-recruitment" class="section level3">
 <h3><span class="header-section-number">2.1.1</span> Sample size for unequal exposure times with uniform recruitment</h3>
-<p>The first case study focus on determining the sample size for a group sequential design where we assume a rate ratio in the alternative of <span class="math inline">\(\mu_1 / \mu_2 = 0.0875/0.125=0.7\)</span> to be tested with the margin <span class="math inline">\(\delta=1\)</span>. The dispersion parameter is chosen to be <span class="math inline">\(\phi = 0.8\)</span>. The target power for the test in the group sequential design is <span class="math inline">\(1-\beta=0.8\)</span>, the data looks are performed at information times of <span class="math inline">\(50\%\)</span> and <span class="math inline">\(70\%\)</span> of the maximum information <span class="math inline">\(\mathcal{I}_{max}\)</span>, and the O’Brien-Fleming-type error spending function is considered to allocated the significance level <span class="math inline">\(\alpha=0.025\)</span>. Furthermore, it is assumed that patients are entering the study uniformly over a period of 1.25 years and that the study ends 2.75 years after the last patient entered, i.e. after four years in total. The respective sample size can then be calculated using the R function <code>design_gsnb</code>.</p>
+<p>The first case study focus on determining the sample size for a group sequential design where we assume a rate ratio in the alternative of <span class="math inline">\(\mu_1 / \mu_2 = 0.0875/0.125=0.7\)</span> to be tested with the margin <span class="math inline">\(\delta=1\)</span>. The dispersion parameter is chosen to be <span class="math inline">\(\phi = 5\)</span>. The target power for the test in the group sequential design is <span class="math inline">\(1-\beta=0.8\)</span>, the data looks are performed at information times of <span class="math inline">\(40\%\)</span> and <span class="math inline">\(70\%\)</span> of the maximum information <span class="math inline">\(\mathcal{I}_{max}\)</span>, and the O’Brien-Fleming-type error spending function is considered to allocated the significance level <span class="math inline">\(\alpha=0.025\)</span>. Furthermore, it is assumed that patients are entering the study uniformly over a period of 1.25 years and that the study ends 2.75 years after the last patient entered, i.e. after four years in total. The respective sample size can then be calculated using the R function <code>design_gsnb</code>.</p>
 <pre class="r"><code>out &lt;- design_gsnb(rate1 = 0.0875, rate2 = 0.125, dispersion = 5, 
                    ratio_H0 = 1, power = 0.8, sig_level = 0.025, 
                    timing = c(0.4, 0.7, 1), esf = obrien, study_period = 4, 
@@ -1661,8 +1623,8 @@ out</code></pre>
 ##  $ random_ratio  : num 1
 ##  $ efficacy      :List of 3
 ##   ..$ esf     :function (t, sig_level, ...)  
-##   .. ..- attr(*, &quot;srcref&quot;)= 'srcref' int [1:8] 30 11 35 1 11 1 30 35
-##   .. .. ..- attr(*, &quot;srcfile&quot;)=Classes 'srcfilecopy', 'srcfile' &lt;environment: 0x5652030042e8&gt; 
+##   .. ..- attr(*, &quot;srcref&quot;)= &#39;srcref&#39; int [1:8] 30 11 35 1 11 1 30 35
+##   .. .. ..- attr(*, &quot;srcfile&quot;)=Classes &#39;srcfilecopy&#39;, &#39;srcfile&#39; &lt;environment: 0x5aa5e70&gt; 
 ##   ..$ spend   : num [1:3] 0.000394 0.00699 0.017616
 ##   ..$ critical: num [1:3] -3.36 -2.44 -2
 ##  $ ratio_H1      : num 0.7
@@ -1676,13 +1638,13 @@ out</code></pre>
 ##  $ accrual_period: num 1.25
 ##  $ study_period  : num 4
 ##  $ stop_prob     :List of 1
-##   ..$ efficacy:'data.frame': 2 obs. of  5 variables:
+##   ..$ efficacy:&#39;data.frame&#39;: 2 obs. of  5 variables:
 ##   .. ..$ Rate ratio: num [1:2] 1 0.7
 ##   .. ..$ Look 1    : num [1:2] 0.000394 0.058073
 ##   .. ..$ Look 2    : num [1:2] 0.00699 0.41034
 ##   .. ..$ Look 3    : num [1:2] 0.0176 0.3317
 ##   .. ..$ Total     : num [1:2] 0.025 0.8
-##  $ expected_info :'data.frame':  2 obs. of  2 variables:
+##  $ expected_info :&#39;data.frame&#39;:  2 obs. of  2 variables:
 ##   ..$ Rate ratio: num [1:2] 1 0.7
 ##   ..$ E[I]      : num [1:2] 62.5 52.8
 ##  $ power_fix     : num 0.806
@@ -1752,7 +1714,7 @@ out3$n2</code></pre>
 ## [1] 123
 ## [1] 123</code></pre>
 <p>The sample size calculated in output <code>out3</code> is independent of the time the various subjects enter the study. However, the time the subjects enter the study affects the calendar time of the data looks.</p>
-<p>The sample size ratio <span class="math inline">\(n_1 / n_2\)</span> is by default set to be one but can be changed in the input through the argument <code>random_ratio</code>. The next chunk shows an example for which the sample size in group 1 is twice the sample size of group 2, i.e. <span class="math inline">\(n_1 / n_2 = 2\)</span>, and a nonbinding futility boundary is included based on the O’Brien-Fleming-type error spending function.</p>
+<p>The sample size ratio <span class="math inline">\(n_1 / n_2\)</span> is by default set to be one but can be changed in the input through the argument <code>random_ratio</code>. The next chunk shows an example for which the sample size in group 1 is twice the sample size of group 2, i.e. <span class="math inline">\(n_1 / n_2 = 2\)</span>, and a nonbinding futility boundary is included based on the O’Brien-Fleming-type error spending function.</p>
 <pre class="r"><code>out4 &lt;- design_gsnb(rate1 = 4.2, rate2 = 8.4, dispersion = 3, ratio_H0 = 1, 
                    power = 0.8, sig_level = 0.025, timing = c(0.5, 1), 
                    esf = pocock, followup_max = 0.5, random_ratio = 2,
@@ -1820,8 +1782,8 @@ events_interim$t_expose &lt;- t - events_interim$t_recruit
 glm_out &lt;- MASS::glm.nb(formula = count ~ treatment + offset(log(t_expose)) - 1, 
                         data = events_interim)
 rates &lt;- exp(glm_out$coefficients)
-followup1 &lt;- dplyr::filter(events_interim, treatment == 'experiment')$t_expose
-followup2 &lt;- dplyr::filter(events_interim, treatment == 'control')$t_expose
+followup1 &lt;- dplyr::filter(events_interim, treatment == &#39;experiment&#39;)$t_expose
+followup2 &lt;- dplyr::filter(events_interim, treatment == &#39;control&#39;)$t_expose
 # Information level at calendar time t
 info_interim &lt;- get_info_gsnb(rate1 = rates[&quot;treatmentexperiment&quot;],
                               rate2 = rates[&quot;treatmentcontrol&quot;],
@@ -1835,7 +1797,7 @@ summary(glm_interim1)$coefficients</code></pre>
 <pre><code>##                    Estimate Std. Error    z value     Pr(&gt;|z|)
 ## (Intercept)      -2.3544742  0.1475891 -15.952898 2.719780e-57
 ## treatmentcontrol  0.2678467  0.1985713   1.348869 1.773789e-01</code></pre>
-<p>The test statistic for the test of efficacy (and futility if stopping for futility is part of the design) is the negative <span class="math inline">\(z\)</span>-value of the coefficient <code>treatmentcontrol</code>, i.e. <span class="math inline">\(T_1 = -1.349\)</span>. However, the critical value for the first data look as calculated during the planning phase of the study and stored in the object <code>out</code> under <code>out$efficacy$critical</code>, is <span class="math inline">\(c_1 = -3.357\)</span>. Thus, since the test statistic is not smaller than the critical value, the clinical trial is not stopped for efficacy.</p>
+<p>The test statistic for the test of efficacy (and futility if stopping for futility is part of the design) is the negative <span class="math inline">\(z\)</span>-value of the coefficient <code>treatmentcontrol</code>, i.e. <span class="math inline">\(T_1 = -1.349\)</span>. However, the critical value for the first data look as calculated during the planning phase of the study and stored in the object <code>out</code> under <code>out$efficacy$critical</code>, is <span class="math inline">\(c_1 = -3.357\)</span>. Thus, since the test statistic is not smaller than the critical value, the clinical trial is not stopped for efficacy.</p>
 </div>
 <div id="planning-and-analyzing-a-fixed-sample-design-with-negative-binomial-outcomes" class="section level1">
 <h1><span class="header-section-number">4</span> Planning and analyzing a fixed sample design with negative binomial outcomes</h1>
@@ -1906,6 +1868,49 @@ $(document).ready(function () {
 });
 
 
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
 </script>
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
