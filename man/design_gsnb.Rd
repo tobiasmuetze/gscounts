@@ -170,5 +170,5 @@ out <- design_gsnb(rate1 = 0.0875, rate2 = 0.125, dispersion = 5,
 \references{
 Mütze, T., Glimm, E., Schmidli, H., & Friede, T. (2018). 
 Group sequential designs for negative binomial outcomes. 
-Statistical Methods in Medical Research, \url{https://doi.org/10.1177/0962280218773115}.
+Statistical Methods in Medical Research,  <doi:10.1177/0962280218773115>.
 }
