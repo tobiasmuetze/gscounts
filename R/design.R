@@ -309,8 +309,11 @@ design_gsnb <- function(rate1, rate2, dispersion, ratio_H0 = 1, random_ratio = 1
                                     t_recruit1 = t_recruit1, t_recruit2 = t_recruit2)
     x$calendar <- get_calendartime_gsnb(rate1 = rate1, rate2 = rate2, dispersion = dispersion, 
                                         t_recruit1 = out$t_recruit1, t_recruit2 = out$t_recruit2,
-                                        timing = timing, followup1 = out$study_period - out$t_recruit1,
-                                        followup2 = out$study_period - out$t_recruit2)
+                                        timing = timing, 
+                                        followup1 = pmax(out$study_period - out$t_recruit1, 0),
+                                        followup2 = pmax(out$study_period - out$t_recruit2, 0))
+    ## info(t)=info_max might have multiple solutions; code ensures that $calendar and $study_period match
+    x$calendar[length(x$calendar)] <- out$study_period  
   } else if (all(!isNull_sp, !isNull_ap, isNull_fm, isNull_t1, isNull_t1)) {
     # 3. Calculate sample size for fixed accrual and study period (using uniform recruitment)
     out <- samplesize_from_periods(max_info = x$max_info, accrual_period = accrual_period,

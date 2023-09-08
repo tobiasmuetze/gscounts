@@ -1,13 +1,16 @@
 ---
 title: "<center>News for *gscounts*</center>"
 author: "<center>Tobias Mütze</center>"
-date: "<center>November 1st 2021</center>"
+date: "<center>September 8th 2023</center>"
 ---
+
+## gscounts 0.1-4.9000
+
+* Fixed bug in `design_gsnb` that occured when maximum information was achieved prior to the end of recruitment
 
 ## gscounts 0.1-4
 
 * Fixed typo in vignette
-* 
 
 ## gscounts 0.1-3
 

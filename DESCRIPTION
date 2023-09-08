@@ -1,7 +1,7 @@
 Package: gscounts
 Type: Package
 Title: Group Sequential Designs with Negative Binomial Outcomes
-Version: 0.1-4
+Version: 0.1-4.9000
 Authors@R: person("Tobias", "Mütze", role=c("aut","cre"),
                     email="tobias.muetze@outlook.com",
                     comment = c(ORCID = "0000-0002-4111-1941"))
@@ -10,7 +10,7 @@ Description: Design and analysis of group sequential designs for negative
     binomial outcomes, as described by T Mütze, E Glimm, H Schmidli, T Friede (2018) <doi:10.1177/0962280218773115>.
 Depends:
     R (>= 3.0.0)
-Imports: stats, Rcpp(>= 0.12.9)
+Imports: stats, Rcpp(>= 1.0.10)
 Suggests:
     testthat,
     MASS,
@@ -19,7 +19,7 @@ Suggests:
     dplyr,
     gsDesign,
     mvtnorm
-License: GPL (>= 2)
+License: GPL (>= 3)
 NeedsCompilation: yes
 URL: https://github.com/tobiasmuetze/gscounts
 BugReports: https://github.com/tobiasmuetze/gscounts/issues
@@ -27,4 +27,4 @@ VignetteBuilder: knitr
 LazyData: true
 LinkingTo: Rcpp
 Encoding: UTF-8
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.3
